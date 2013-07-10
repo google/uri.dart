@@ -1,0 +1,7 @@
+name: uri_template
+version: 0.1.0
+author: Dart Authors <misc@dartlang.org>
+description: An implementation of  RFC 6570 UTI Templates
+homepage: https://github.com/dart-lang/route
+dev_dependencies:
+  unittest: any

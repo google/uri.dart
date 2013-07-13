@@ -9,7 +9,7 @@ import 'dart:json' as json;
 import 'package:unittest/unittest.dart';
 import 'package:uri_template/uri_template.dart';
 
-void runSpecTests(testname) {
+void runSpecTests(testname, {solo}) {
   var testFile = new File('uritemplate-test/$testname.json');
   var testJson = json.parse(testFile.readAsStringSync());
 
@@ -21,6 +21,7 @@ void runSpecTests(testname) {
 
       for (List testCase in testCases) {
         String templateString = testCase[0];
+        if (solo != null && templateString == solo) continue;
         test(templateString, () {
           var expectation = testCase[1];
           if (expectation == false) {

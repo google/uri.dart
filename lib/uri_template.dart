@@ -6,6 +6,7 @@ library uri_template;
 
 import 'package:quiver/pattern.dart';
 import 'src/encoding.dart';
+import 'src/utils.dart';
 
 part 'uri_parser.dart';
 
@@ -47,8 +48,11 @@ class UriTemplate {
 
   UriTemplate(template) : template = template, _parts = _compile(template);
 
+  String toString() => template;
+
   static List _compile(String template) {
     List parts = [];
+    template.split(_exprRegex);
     template.splitMapJoin(_exprRegex,
         onMatch: (match) { return parts.add(match); },
         onNonMatch: (String nonMatch) {
@@ -114,7 +118,7 @@ class UriTemplate {
           } else if (value != null) {
             str = '$value';
             if (prefixLength > 0 && prefixLength < str.length) {
-              str = '$value'.substring(0, prefixLength);
+              str = str.substring(0, prefixLength);
             }
             str = _encode(str, allowReserved);
             if (formStyle) {

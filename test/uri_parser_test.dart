@@ -8,7 +8,7 @@ import 'package:unittest/unittest.dart';
 import 'package:uri_template/uri_template.dart';
 
 main() {
-  //
+
   group('UriParser.parse', () {
 
     test('should parse simple variables', () {
@@ -68,6 +68,40 @@ main() {
 
   });
 
+  group('UriParser.parsePrefix', () {
+
+    test('should parse a path prefix', () {
+      expectParsePrefix('/foo', '/foo/bar', {}, restPath: '/bar');
+    });
+
+    test('should not match a non-mathcing path', () {
+      expectParsePrefix('/foo', '/bar/baz', {}, matches: false);
+    });
+
+    test('should parse a path prefix with expressions', () {
+      expectParsePrefix('/foo/{a}', '/foo/bar/baz', {'a' :'bar'},
+          restPath: '/baz');
+    });
+
+    test('should parse a fragment prefix', () {
+      expectParsePrefix('/foo#bar', '/foo#bar/baz', {}, restPath: '',
+          restFragment: '/baz');
+    });
+
+    test('should not match a non-mathcing fragment', () {
+      expectParsePrefix('/foo#bar', '/foo#baz', {}, matches: false);
+    });
+
+    test('should parse a fragment prefix with expressions', () {
+      expectParsePrefix('/foo#bar/{#a}', '/foo#bar/baz/qux', {'a': 'baz'},
+          restPath: '', restFragment: '/qux');
+    });
+
+    test('should not match a non-mathcing query', () {
+      expectParsePrefix('/foo?a=x', '/foo?b=y', {}, matches: false);
+    });
+
+  });
 
   group('UriParser.match', () {
 
@@ -114,7 +148,7 @@ main() {
       expect(() => new UriParser(new UriTemplate('/foo#c?a=x&b=y')), throws);
     });
 
-    test('should match paths with paths using simple variables', () {
+    test('should match paths using simple variables', () {
       expectMatch('/head/{a}/{b}/tail', '/head/xx/yy/tail');
     });
 
@@ -159,24 +193,35 @@ main() {
 
 }
 
-expectParse(template, uri, variables, {reverse: false}) {
+expectParse(String template, String uriString, variables, {reverse: false}) {
+  var uri = Uri.parse(uriString);
   var uriTemplate = new UriTemplate(template);
   var parser = new UriParser(uriTemplate);
 
   expect(parser.parse(uri), equals(variables));
   expect(parser.matches(uri), true);
   if (reverse) {
-    expect(uriTemplate.expand(variables), uri);
+    expect(uriTemplate.expand(variables), uri.toString());
   }
 }
 
-expectMatch(template, uri) {
+expectParsePrefix(String template, String uriString, variables,
+    {restPath, restFragment, matches: true}) {
+  var uri = Uri.parse(uriString);
   var parser = new UriParser(new UriTemplate(template));
-  expect(parser.matches(uri), true,
-      reason: parser.fragmentRegex.toString());
+  var match = parser.parsePrefix(uri);
+  if (restPath != null) expect(match.rest.path, restPath);
+  if (restFragment != null) expect(match.rest.fragment, restFragment);
+  expect(match.matches, matches);
 }
 
-expectNonMatch(template, uri) {
+expectMatch(String template, String uriString) {
+  var uri = Uri.parse(uriString);
+  var parser = new UriParser(new UriTemplate(template));
+  expect(parser.matches(uri), true, reason: '${parser.pathRegex}');
+}
+
+expectNonMatch(String template, String uriString) {
+  var uri = Uri.parse(uriString);
   expect(new UriParser(new UriTemplate(template)).matches(uri), false);
 }
-

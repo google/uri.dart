@@ -4,11 +4,10 @@
 
 library uri_template;
 
-import 'dart:math' as math;
-import 'dart:utf';
-
+import 'package:quiver/pattern.dart';
 import 'src/encoding.dart';
-import 'src/utils.dart';
+
+part 'uri_parser.dart';
 
 final _exprRegex = new RegExp(r'{('
     r'([+#./;?&]?)' // optional operator
@@ -18,7 +17,7 @@ final _exprRegex = new RegExp(r'{('
 final _literalVerifier = new RegExp(r'[{}]');
 final _simpleExprRegex = new RegExp(r'(?:\w|[%.,])+');
 final _varspecRegex = new RegExp(r'^((?:\w|[%.])+)((?::\d+)|(?:\*))?$');
-
+final _fragOrQueryRegex = new RegExp(r'([#?])');
 const _OPERATORS = r'+#./;?&';
 
 // TODO(justinfagnani): write real, non-spec, documentation.
@@ -46,26 +45,19 @@ class UriTemplate {
   final String template;
   final List _parts;
 
-  // parsing helpers, setup in _prepareParsing()
-  RegExp _pathRegex;
-  List<String> _pathVariables;
-  List<String> _queryVariables;
-  List<String> _fragmentVariables;
-
-  UriTemplate(String template)
-      : template = template, _parts = _compile(template);
+  UriTemplate(template) : template = template, _parts = _compile(template);
 
   static List _compile(String template) {
     List parts = [];
     template.splitMapJoin(_exprRegex,
-        onMatch: (match) => parts.add(match),
+        onMatch: (match) { return parts.add(match); },
         onNonMatch: (String nonMatch) {
           if (_literalVerifier.hasMatch(nonMatch)) {
             throw new ParseException(nonMatch);
           }
           if (nonMatch.isNotEmpty) parts.add(nonMatch);
         });
-    return parts;
+    return parts.toList(growable: false);
   }
 
   /**
@@ -120,10 +112,9 @@ class UriTemplate {
               if (formStyle && !explode) str = '$varname=$str';
             }
           } else if (value != null) {
-            if (prefixLength > 0 && prefixLength < value.length) {
+            str = '$value';
+            if (prefixLength > 0 && prefixLength < str.length) {
               str = '$value'.substring(0, prefixLength);
-            } else {
-              str = '$value';
             }
             str = _encode(str, allowReserved);
             if (formStyle) {
@@ -143,115 +134,6 @@ class UriTemplate {
       }
     }
     return sb.toString();
-  }
-
-  // TODO:
-  // implement matches()
-  Map<String, String> parse(String uriString) {
-    _prepareParsing();
-    var uri = Uri.parse(uriString);
-    var parameters = {};
-
-    if (_pathVariables != null) {
-      var match = _pathRegex.firstMatch(uri.path);
-      if (match == null) {
-        throw new ParseException('$template does not match $uriString');
-      }
-      int i = 1;
-      for (var param in _pathVariables) {
-        parameters[param] = match.group(i++);
-      }
-    }
-    if (_queryVariables != null) {
-      for (var key in _queryVariables) {
-        parameters[key] = uri.queryParameters[key];
-      }
-    }
-    if (_fragmentVariables != null) {
-      // assume that fragments with an '=' char are key/value maps
-      // parse them forgivingly, and put pairs into a map as the value
-      // of the fragment expression's variable
-      if (_fragmentVariables.length == 1 && uri.fragment.contains('=')) {
-        var map = {};
-        var kvPairs = uri.fragment.split(',');
-        for (int i = 0; i < kvPairs.length; i++) {
-          String kvPair = kvPairs[i];
-          var eqIndex = kvPair.indexOf('=');
-          if (eqIndex > -1) {
-            var key = kvPair.substring(0, eqIndex);
-            var value = '';
-            // handle key1=,,key2=x
-            if (eqIndex == kvPair.length - 1) {
-              if (i < kvPairs.length - 1 && kvPairs[i+1] == '') {
-                value = ',';
-              }
-              // else value = '';
-            } else {
-              value = kvPair.substring(eqIndex + 1);
-            }
-            map[key] = value;
-          }
-        }
-        parameters[_fragmentVariables.first] = map;
-      } else {
-        var fragmentValues = uri.fragment.split(',');
-        for (var i = 0; i < _fragmentVariables.length; i++) {
-          parameters[_fragmentVariables[i]] = fragmentValues[i];
-        }
-      }
-    }
-    return parameters;
-  }
-
-  // Performs one-time setup for parsing URIs
-  // TODO(justin): support explode and prefix modifiers
-  // TODO(justin): support more operators
-  _prepareParsing() {
-    if (_pathRegex != null) return;
-    var pattern = _parts.map((part) {
-      if (part is Match) {
-        Match match = part;
-        var expr = match.group(3);
-        var op = match.group(2);
-        if (op == '' || op == '+') {
-          if (_queryVariables != null) {
-            throw new ParseException('Query expressions must not appear before '
-                'path expressions: $template');
-          }
-          if (!_simpleExprRegex.hasMatch(expr)) {
-            throw new ParseException('Unsupported expression $expr: $template');
-          }
-          if (_pathVariables == null) _pathVariables = [];
-          return expr.split(',').map((varspec) {
-            _pathVariables.add(_varspecRegex.firstMatch(varspec).group(1));
-            if (op == '') return r'((?:\w|%)+)';
-            // ?, #, [,  and ] cannot appear in URI paths
-            if (op == '+') return r"((?:\w|[:/@!$&'()*+,;=])+)";
-          }).join(',');
-        } else if (op == '?') {
-          if (_queryVariables != null) throw new ParseException('More than one '
-              'query expression found: $template');
-          _queryVariables = expr.split(',').map((e) =>
-              _varspecRegex.firstMatch(e).group(1)).toList(growable: false);
-        } else if (op == '#') {
-          if (_pathVariables != null) {
-            throw new ParseException('Fragment expressions '
-                'must not appear before path expressions: $template');
-          }
-          if (_fragmentVariables != null) {
-            throw new ParseException('More than one fragment expression found: '
-                '$template');
-          }
-          _fragmentVariables = expr.split(',').map((e) =>
-              _varspecRegex.firstMatch(e).group(1)).toList(growable: false);
-        } else {
-          throw new ParseException("Unsupported operation $op: $template");
-        }
-      } else {
-        return '(?:${escapeRegex(part)})';
-      }
-    }).where((i) => i != null).join('');
-    _pathRegex = new RegExp('^$pattern\$');
   }
 }
 

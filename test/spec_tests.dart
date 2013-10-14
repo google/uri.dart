@@ -46,6 +46,11 @@ void runSpecTests(testname, {solo}) {
 }
 
 main() {
+  if (!new File('uritemplate-test/spec-examples.json').existsSync()) {
+    print("spec examples not found. Try running `git submodule update`");
+    exit(1);
+  }
+
   runSpecTests('spec-examples');
   runSpecTests('spec-examples-by-section');
   runSpecTests('extended-tests');

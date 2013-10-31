@@ -5,13 +5,13 @@
 library spec_tests;
 
 import 'dart:io';
-import 'dart:json' as json;
+import 'dart:convert' show JSON;
 import 'package:unittest/unittest.dart';
 import 'package:uri_template/uri_template.dart';
 
 void runSpecTests(testname, {solo}) {
   var testFile = new File('uritemplate-test/$testname.json');
-  var testJson = json.parse(testFile.readAsStringSync());
+  var testJson = JSON.decode(testFile.readAsStringSync());
 
   for (var specGroup in testJson.keys) {
     group(specGroup, () {

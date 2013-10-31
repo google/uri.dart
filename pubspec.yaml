@@ -1,5 +1,5 @@
 name: uri_template
-version: 0.4.0
+version: 0.5.0
 author: Dart Authors <misc@dartlang.org>
 description: An implementation of  RFC 6570 URI Templates
 homepage: https://github.com/dart-lang/uri_template

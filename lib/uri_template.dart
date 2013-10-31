@@ -139,6 +139,10 @@ class UriTemplate {
     }
     return sb.toString();
   }
+
+  bool operator ==(o) => o is UriTemplate && o.template == template;
+
+  int get hashCode => template.hashCode;
 }
 
 String _encode(String s, [bool allowReserved = false]) {

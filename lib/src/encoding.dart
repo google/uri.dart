@@ -4,7 +4,7 @@
 
 library uri_template.encoding;
 
-import 'dart:utf';
+import 'package:utf/utf.dart' show codepointsToUtf8;
 
 const int _PERCENT = 0x25;
 const int _ZERO = 0x30;

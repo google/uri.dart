@@ -10,7 +10,7 @@ import 'package:unittest/unittest.dart';
 import 'package:uri_template/uri_template.dart';
 
 void runSpecTests(testname, {solo}) {
-  var testFile = new File('uritemplate-test/$testname.json');
+  var testFile = new File('test/uritemplate-test/$testname.json');
   var testJson = JSON.decode(testFile.readAsStringSync());
 
   for (var specGroup in testJson.keys) {
@@ -46,8 +46,9 @@ void runSpecTests(testname, {solo}) {
 }
 
 main() {
-  if (!new File('uritemplate-test/spec-examples.json').existsSync()) {
-    print("spec examples not found. Try running `git submodule update`");
+  if (!new File('test/uritemplate-test/spec-examples.json').existsSync()) {
+    print("spec examples not found. Make sure you run tests from the project"
+        " directory, or try running `git submodule update`.");
     exit(1);
   }
 

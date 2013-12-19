@@ -1,12 +1,12 @@
-name: uri_template
-version: 0.6.0
+name: uri
+version: 0.7.0
 author: Dart Authors <misc@dartlang.org>
-description: An implementation of  RFC 6570 URI Templates
-homepage: https://github.com/dart-lang/uri_template
+description: Utilities for building and parsing URIs
+homepage: https://github.com/dart-lang/uri
 dependencies:
-  quiver: '>=0.12.0'
+  quiver: '>=0.17.0'
   utf: '>=0.8.10'
 dev_dependencies:
-  unittest: any
+  unittest: '>=0.9.2'
 environment:
   sdk: '>=0.8.10'

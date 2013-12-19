@@ -7,7 +7,7 @@ library spec_tests;
 import 'dart:io';
 import 'dart:convert' show JSON;
 import 'package:unittest/unittest.dart';
-import 'package:uri_template/uri_template.dart';
+import 'package:uri/uri.dart';
 
 void runSpecTests(testname, {solo}) {
   var testFile = new File('test/uritemplate-test/$testname.json');

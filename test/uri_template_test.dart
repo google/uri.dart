@@ -5,7 +5,7 @@
 library uri_template_test;
 
 import 'package:unittest/unittest.dart';
-import 'package:uri_template/uri_template.dart';
+import 'package:uri/uri.dart';
 
 main() {
   group('UriTemplate', () {

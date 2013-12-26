@@ -3,7 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:unittest/unittest.dart';
-import 'package:uri_template/src/encoding.dart';
+import 'package:uri/src/encoding.dart';
 
 main() {
   group('pctEncode allow reserved', () {

@@ -17,9 +17,19 @@ part of uri;
  *  * Queries can only use the ? or & operator. The ? operator can only be used
  *    once.
  *  * Fragments can only use the # operator
+ *
+ *  By default, fragments are treated as patchs and prefix-matched. This means
+ *  that the template '#foo' will match against the fragments `#foo`, and
+ *  `#foo/bar`, but not `#foobar`. This is to facilitate hierarchical matching
+ *  in client-side routing applications, a likely use case, since fragments are
+ *  not usually available to servers. You can turn off fragment prefix-matching
+ *  with the `fragmentPrefixMatching` construtor parameter.
  */
 class UriParser extends UriPattern {
+  static final _pathSeparators = new RegExp('[./]');
+
   final UriTemplate template;
+  final bool _fragmentPrefixMatching;
 
   RegExp _pathRegex;
   List<String> _pathVariables;
@@ -31,7 +41,8 @@ class UriParser extends UriPattern {
   RegExp get fragmentRegex => _fragmentRegex;
   RegExp get pathRegex => _pathRegex;
 
-  UriParser(UriTemplate this.template) {
+  UriParser(UriTemplate this.template, {bool fragmentPrefixMatching: true})
+      : _fragmentPrefixMatching = firstNonNull(fragmentPrefixMatching, true) {
     if (template == null) throw new ArgumentError("null template A");
     var compiler = new _Compiler(template);
     _pathRegex = compiler.pathRegex;
@@ -86,7 +97,7 @@ class UriParser extends UriPattern {
     var restUriBuilder = new UriBuilder();
 
     if (_pathRegex != null) {
-      var match = _pathRegex.firstMatch(uri.path);
+      var match = _pathRegex.matchAsPrefix(uri.path);
       if (match == null) {
         return null;
       } else {
@@ -94,7 +105,15 @@ class UriParser extends UriPattern {
         for (var param in _pathVariables) {
           parameters[param] = match.group(i++);
         }
-        restUriBuilder.path = uri.path.substring(match.end);
+        if (match.end < uri.path.length) {
+          if (_pathSeparators.hasMatch(uri.path[match.end])) {
+            restUriBuilder.path = uri.path.substring(match.end + 1);
+          } else if (_pathSeparators.hasMatch(uri.path[match.end - 1])) {
+            restUriBuilder.path = uri.path.substring(match.end);
+          } else {
+            return null;
+          }
+        }
       }
     } else {
       restUriBuilder.path = uri.path;
@@ -120,14 +139,26 @@ class UriParser extends UriPattern {
     if (_fragmentRegex != null) {
       if (uri.fragment.isEmpty) return null;
       var match = _fragmentRegex.matchAsPrefix(uri.fragment);
-      if (match == null || match.end != uri.fragment.length) {
+      var prefixMatch = _fragmentPrefixMatching &&
+          _pathSeparators.hasMatch(uri.fragment);
+      if (match == null || (!prefixMatch && match.end != uri.fragment.length)) {
         return null;
       } else {
         int i = 1;
         for (var param in _fragmentVariables) {
           parameters[param] = match.group(i++);
         }
-        restUriBuilder.fragment = uri.fragment.substring(match.end);
+        if (prefixMatch) {
+          if (match.end < uri.fragment.length) {
+            if (_pathSeparators.hasMatch(uri.fragment[match.end])) {
+              restUriBuilder.fragment = uri.fragment.substring(match.end + 1);
+            } else if (_pathSeparators.hasMatch(uri.fragment[match.end - 1])) {
+              restUriBuilder.fragment = uri.fragment.substring(match.end);
+            } else {
+              return null;
+            }
+          }
+        }
       }
     }
     return new UriMatch(this, uri, parameters, restUriBuilder.build());

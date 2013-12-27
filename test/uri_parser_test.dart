@@ -70,35 +70,70 @@ main() {
 
   group('UriParser.match', () {
 
-    test('should match a path prefix', () {
-      expectParsePrefix('/foo', '/foo/bar', {}, restPath: '/bar');
+    group('on paths', () {
+
+      test('should match a simple path', () {
+        expectParsePrefix('/foo', '/foo', {}, restPath: '');
+      });
+
+      test('should match a path prefix', () {
+        expectParsePrefix('/foo', '/foo/bar', {}, restPath: 'bar');
+      });
+
+      test('should not match a partial prefix', () {
+        expectNonMatch('/fo', '/foo/bar');
+      });
+
+      test('should not match a non-mathcing path', () {
+        expectParsePrefix('/foo', '/bar/baz', {}, matches: false);
+      });
+
+      test('should match a path prefix with expressions', () {
+        expectParsePrefix('/foo/{a}', '/foo/bar/baz', {'a' :'bar'},
+            restPath: 'baz');
+        expectParsePrefix('/foo/{a}/baz/{b}', '/foo/bar/baz/qux',
+            {'a' :'bar', 'b': 'qux'}, restPath: '');
+      });
+
     });
 
-    test('should not match a non-mathcing path', () {
-      expectParsePrefix('/foo', '/bar/baz', {}, matches: false);
-    });
+    group('on fragments', () {
+      test('should match a simple fragment', () {
+        expectParsePrefix('/foo#bar', '/foo#bar', {});
+      });
 
-    test('should match a path prefix with expressions', () {
-      expectParsePrefix('/foo/{a}', '/foo/bar/baz', {'a' :'bar'},
-          restPath: '/baz');
-    });
+      test('should not match a non-mathcing fragment', () {
+        expectParsePrefix('/foo#bar', '/foo#baz', {}, matches: false);
+      });
 
-    // TODO(justinfagnani) reenable when we figure out how to support both
-    // prefixed and non-prefixed fragments
-    skip_test('should match a fragment prefix', () {
-      expectParsePrefix('/foo#bar', '/foo#bar/baz', {}, restPath: '',
-          restFragment: '/baz');
-    });
+      // proposed behavior: perform a prefix match when the fragment
+      // contains path seperators: '/' or '.'
+      test('should match a fragment prefix', () {
+        expectParsePrefix('/foo#bar', '/foo#bar/baz', {}, restPath: '',
+            restFragment: 'baz');
+        expectParsePrefix('/foo#bar', '/foo#bar.baz', {}, restPath: '',
+            restFragment: 'baz');
+        expectParsePrefix('/foo#bar/', '/foo#bar/baz', {}, restPath: '',
+            restFragment: 'baz');
+        expectParsePrefix('/foo#bar', '/foo#bar/baz/qux', {}, restPath: '',
+            restFragment: 'baz/qux');
+        expectParsePrefix('/foo#bar', '/foo#bar.baz.qux', {}, restPath: '',
+            restFragment: 'baz.qux');
+      });
 
-    test('should not match a non-mathcing fragment', () {
-      expectParsePrefix('/foo#bar', '/foo#baz', {}, matches: false);
-    });
+      // proposed behavior: prefix matches must match an entire path segment
+      test('should not match a partial fragment prefix', () {
+        expectParsePrefix('/foo#ba', '/foo#bar/baz', {}, matches: false);
+        expectParsePrefix('/foo#ba', '/foo#bar.baz', {}, matches: false);
+      });
 
-    // TODO(justinfagnani) reenable when we figure out how to support both
-    // prefixed and non-prefixed fragments
-    skip_test('should match a fragment prefix with expressions', () {
-      expectParsePrefix('/foo#bar/{#a}', '/foo#bar/baz/qux', {'a': 'baz'},
-          restPath: '', restFragment: '/qux');
+      test('should match a fragment prefix with expressions', () {
+        expectParsePrefix('/foo#bar/{#a}', '/foo#bar/baz/qux', {'a': 'baz'},
+            restPath: '', restFragment: 'qux');
+        expectParsePrefix('/foo#bar/{#a}/qux/{#b}', '/foo#bar/baz/qux/quux',
+            {'a': 'baz', 'b': 'quux'},
+            restPath: '', restFragment: '');
+      });
     });
 
     test('should not match a non-mathcing query', () {
@@ -216,12 +251,9 @@ expectParsePrefix(String template, String uriString, variables,
   var uri = Uri.parse(uriString);
   var parser = new UriParser(new UriTemplate(template));
   var match = parser.match(uri);
-  if (!matches) {
-    expect(match, isNull);
-  } else {
-    if (restPath != null) expect(match.rest.path, restPath);
-    if (restFragment != null) expect(match.rest.fragment, restFragment);
-  }
+  expect(match == null, !matches);
+  if (restPath != null) expect(match.rest.path, restPath);
+  if (restFragment != null) expect(match.rest.fragment, restFragment);
 }
 
 expectMatch(String template, String uriString) {

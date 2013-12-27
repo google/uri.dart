@@ -1,5 +1,5 @@
 name: uri
-version: 0.7.1
+version: 0.8.0
 author: Dart Authors <misc@dartlang.org>
 description: Utilities for building and parsing URIs
 homepage: https://github.com/dart-lang/uri

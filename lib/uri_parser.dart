@@ -2,7 +2,7 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-part of uri_template;
+part of uri;
 
 /**
  * Parsable templates have the following restrictions over expandable
@@ -18,7 +18,7 @@ part of uri_template;
  *    once.
  *  * Fragments can only use the # operator
  */
-class UriParser {
+class UriParser extends UriPattern {
   final UriTemplate template;
 
   RegExp _pathRegex;
@@ -81,35 +81,14 @@ class UriParser {
     return parameters;
   }
 
-  bool matches(Uri uri) {
-    if (_pathRegex != null && !matchesFull(_pathRegex, uri.path)) return false;
-
-    for (var key in _queryVariables.keys) {
-      var value = _queryVariables[key];
-      if (value == null && !uri.queryParameters.containsKey(key)) {
-        return false;
-      }
-      if (value != null && uri.queryParameters[key] != value) {
-        return false;
-      }
-    }
-
-    if (_fragmentRegex != null &&
-        (uri.fragment.isEmpty || !matchesFull(_fragmentRegex, uri.fragment))) {
-      return false;
-    }
-    return true;
-  }
-
-  UriMatch parsePrefix(Uri uri) {
+  UriMatch match(Uri uri) {
     var parameters = {};
     var restUriBuilder = new UriBuilder();
-    bool matches = true;
 
     if (_pathRegex != null) {
       var match = _pathRegex.firstMatch(uri.path);
       if (match == null) {
-        matches = false;
+        return null;
       } else {
         int i = 1;
         for (var param in _pathVariables) {
@@ -128,20 +107,21 @@ class UriParser {
         var value = _queryVariables[key];
         if (value == null) {
           if (!uri.queryParameters.containsKey(key)) {
-            matches = false;
+            return null;
           } else {
             parameters[key] = uri.queryParameters[key];
           }
         } else if (uri.queryParameters[key] != value) {
-          matches = false;
+          return null;
         }
       }
     }
 
     if (_fragmentRegex != null) {
-      var match = _fragmentRegex.firstMatch(uri.fragment);
-      if (match == null) {
-        matches = false;
+      if (uri.fragment.isEmpty) return null;
+      var match = _fragmentRegex.matchAsPrefix(uri.fragment);
+      if (match == null || match.end != uri.fragment.length) {
+        return null;
       } else {
         int i = 1;
         for (var param in _fragmentVariables) {
@@ -150,18 +130,11 @@ class UriParser {
         restUriBuilder.fragment = uri.fragment.substring(match.end);
       }
     }
-    return new UriMatch(matches, parameters, restUriBuilder.build());
+    return new UriMatch(this, uri, parameters, restUriBuilder.build());
   }
-}
 
-class UriMatch {
-  final bool matches;
-  final Map<String, String> parameters;
-  final Uri rest;
-
-  UriMatch(this.matches, this.parameters, this.rest);
-
-  String toString() => 'UriMatch(matches: $matches rest: $rest)';
+  Uri expand(Map<String, Object> parameters) =>
+      Uri.parse(template.expand(parameters));
 }
 
 /*

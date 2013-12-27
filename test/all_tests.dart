@@ -12,10 +12,13 @@ import 'uri_template_test.dart' as template;
 import 'uri_test.dart' as uri;
 
 main() {
+  // Attempt to set the working directory to the project directory so that
+  // the spec tests, which access files, run correctly.
   var cwd = path.split(Directory.current.path);
   if (cwd.last == 'test') {
     Directory.current = path.joinAll(cwd.sublist(0, cwd.length - 1));
   }
+
   encoding.main();
   parser.main();
   spec.main();

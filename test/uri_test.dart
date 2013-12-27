@@ -66,4 +66,5 @@ class TestUriPattern extends UriPattern {
   TestUriPattern(this.hashCode);
   UriMatch match(Uri uri) => null;
   bool operator ==(o) => hashCode == o.hashCode;
+  Uri expand(variables) => null;
 }

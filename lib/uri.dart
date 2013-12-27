@@ -4,9 +4,9 @@
 
 library uri;
 
-import 'package:quiver/collection.dart';
-import 'package:quiver/core.dart';
-import 'package:quiver/pattern.dart';
+import 'package:quiver/collection.dart' show mapsEqual;
+import 'package:quiver/core.dart' show firstNonNull, hash4;
+import 'package:quiver/pattern.dart' show escapeRegex;
 
 import 'src/encoding.dart';
 

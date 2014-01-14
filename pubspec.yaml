@@ -6,7 +6,6 @@ homepage: https://github.com/dart-lang/uri
 dependencies:
   quiver: '>=0.17.0'
   utf: '>=0.8.10'
-dev_dependencies:
   unittest: '>=0.9.2'
 environment:
   sdk: '>=0.8.10'

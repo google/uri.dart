@@ -91,6 +91,8 @@ main() {
       test('should match a path prefix with expressions', () {
         expectParsePrefix('/foo/{a}', '/foo/bar/baz', {'a' :'bar'},
             restPath: 'baz');
+        expectParsePrefix('/fo{a}', '/foo/bar/baz', {'a' :'o'},
+            restPath: 'bar/baz');
         expectParsePrefix('/foo/{a}/baz/{b}', '/foo/bar/baz/qux',
             {'a' :'bar', 'b': 'qux'}, restPath: '');
       });
@@ -252,8 +254,11 @@ expectParsePrefix(String template, String uriString, variables,
   var parser = new UriParser(new UriTemplate(template));
   var match = parser.match(uri);
   expect(match == null, !matches);
-  if (restPath != null) expect(match.rest.path, restPath);
-  if (restFragment != null) expect(match.rest.fragment, restFragment);
+  if (match != null) {
+    if (restPath != null) expect(match.rest.path, restPath);
+    if (restFragment != null) expect(match.rest.fragment, restFragment);
+    expect(match.parameters, variables);
+  }
 }
 
 expectMatch(String template, String uriString) {

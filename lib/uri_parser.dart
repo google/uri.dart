@@ -52,6 +52,8 @@ class UriParser extends UriPattern {
     _fragmentVariables = compiler.fragmentVariables;
   }
 
+  String toString() => '$template';
+
   /**
    * Parses [uriString] returning the parameter values in a map keyed by the
    * variable names in the template.

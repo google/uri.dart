@@ -12,6 +12,7 @@ import 'src/encoding.dart';
 
 part 'uri_template.dart';
 part 'uri_parser.dart';
+part 'uri_builder.dart';
 
 /**
  * An interface for objects that match [Uri]s
@@ -78,24 +79,3 @@ class UriMatch {
   int get hashCode => hash4(pattern, input, parameters.toString(), rest);
 }
 
-/**
- * A mutable holder for incrementally building [Uri]s.
- */
-class UriBuilder {
-  String fragment = '';
-  String host = '';
-  String path = '';
-  int port = 0;
-  Map<String, String> queryParameters = <String, String>{};
-  String scheme;
-  String userInfo;
-
-  Uri build() => new Uri(
-      fragment: fragment,
-      host: host,
-      path: path,
-      port: port,
-      queryParameters: queryParameters,
-      scheme: scheme,
-      userInfo: userInfo);
-}

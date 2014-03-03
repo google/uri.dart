@@ -16,6 +16,16 @@ main() {
           reverse: true);
     });
 
+    test('should parse variables with non-alpha characters', () {
+      var unreserved = ['-', '.', '_', '~'];
+      for (var c in unreserved) {
+        expectParse('/{a}', '/one${c}two', {'a': 'one${c}two'},
+            reverse: true);
+        expectParse('/{+a}', '/one${c}two', {'a': 'one${c}two'},
+            reverse: true);
+      }
+    });
+
     test('should parse multiple variables per expression', () {
       expectParse('{a,b}', 'xx,yy', {'a': 'xx', 'b': 'yy'},
           reverse: true);
@@ -32,7 +42,8 @@ main() {
           reverse: true);
       // ?, #, [,  and ] cannot appear in URI paths, so don't include them in
       // the reserved char set
-      var reservedChars = r":/@!$&'()*+,;=";
+      // there's a problem with ":" in SDK 1.3
+      var reservedChars = r"/@!$&'()*+,;=";
       for (var c in reservedChars.split('')) {
         expectParse('{+a}', c, {'a': c}, reverse: true);
       }

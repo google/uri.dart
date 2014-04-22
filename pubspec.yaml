@@ -3,9 +3,9 @@ version: 0.9.0
 author: Dart Authors <misc@dartlang.org>
 description: Utilities for building and parsing URIs
 homepage: https://github.com/google/uri.dart
-dependencies:
-  quiver: '>=0.17.0<=0.18.0'
-  utf: '>=0.8.10<=0.10.0'
-  unittest: '>=0.9.2<=0.11.0'
 environment:
   sdk: '>=0.8.10'
+dependencies:
+  quiver: '>=0.17.0 <0.19.0'
+  unittest: '>=0.9.2 <=0.11.0'
+  utf: '>=0.8.10 <=0.10.0'

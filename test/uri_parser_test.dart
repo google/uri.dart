@@ -108,6 +108,10 @@ main() {
             {'a' :'bar', 'b': 'qux'}, restPath: '');
       });
 
+      test('should preserve query parameters in UriMatch.rest', () {
+        expectParsePrefix('/foo', '/foo/bar?baz=blah', {},
+            restPath: 'bar', restQuery: 'baz=blah');
+      });
     });
 
     group('on fragments', () {
@@ -260,13 +264,14 @@ expectParse(String template, String uriString, variables, {reverse: false}) {
 }
 
 expectParsePrefix(String template, String uriString, variables,
-    {restPath, restFragment, matches: true}) {
+    {restPath, restFragment, restQuery, matches: true}) {
   var uri = Uri.parse(uriString);
   var parser = new UriParser(new UriTemplate(template));
   var match = parser.match(uri);
   expect(match == null, !matches);
   if (match != null) {
     if (restPath != null) expect(match.rest.path, restPath);
+    if (restQuery != null) expect(match.rest.query, restQuery);
     if (restFragment != null) expect(match.rest.fragment, restFragment);
     expect(match.parameters, variables);
   }

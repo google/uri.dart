@@ -121,9 +121,10 @@ class UriParser extends UriPattern {
       restUriBuilder.path = uri.path;
     }
 
+    restUriBuilder.queryParameters.addAll(uri.queryParameters);
+
     if (_queryVariables.isNotEmpty) {
       // TODO(justinfagnani): remove matched parameters?
-      restUriBuilder.queryParameters.addAll(uri.queryParameters);
       for (var key in _queryVariables.keys) {
         var value = _queryVariables[key];
         if (value == null) {

@@ -4,7 +4,7 @@
 
 library uri.matchers;
 
-import 'package:unittest/matcher.dart' show CustomMatcher, Description, Matcher,
+import 'package:matcher/matcher.dart' show CustomMatcher, Description, Matcher,
     allOf, anything;
 
 /**

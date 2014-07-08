@@ -2,10 +2,12 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+library uri.encoding_test;
+
 import 'package:unittest/unittest.dart';
 import 'package:uri/src/encoding.dart';
 
-main() {
+void main() {
   group('pctEncode allow reserved', () {
     test('should encode % chars, but preserve pct-encoded triplets', () {
       expect(pctEncode('%25', reservedTable, allowPctTriplets: true), '%25');
@@ -48,5 +50,4 @@ main() {
       expect(pctEncode("-._~", unreservedTable), "-._~");
     });
   });
-
 }

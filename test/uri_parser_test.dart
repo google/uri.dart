@@ -2,15 +2,13 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-library uri_parser_test;
+library uri.uri_parser_test;
 
 import 'package:unittest/unittest.dart';
 import 'package:uri/uri.dart';
 
-main() {
-
+void main() {
   group('UriParser.parse', () {
-
     test('should parse simple variables', () {
       expectParse('/head/{a}/{b}/tail', '/head/x/y/tail', {'a': 'x', 'b': 'y'},
           reverse: true);
@@ -246,12 +244,10 @@ main() {
     test('should match query and fragment expressions', () {
       expectMatch('/foo{?a}{#b}', '/foo?a=xx#yy');
     });
-
   });
-
 }
 
-expectParse(String template, String uriString, variables, {reverse: false}) {
+void expectParse(String template, String uriString, variables, {reverse: false}) {
   var uri = Uri.parse(uriString);
   var uriTemplate = new UriTemplate(template);
   var parser = new UriParser(uriTemplate);
@@ -263,7 +259,7 @@ expectParse(String template, String uriString, variables, {reverse: false}) {
   }
 }
 
-expectParsePrefix(String template, String uriString, variables,
+void expectParsePrefix(String template, String uriString, variables,
     {restPath, restFragment, restQuery, matches: true}) {
   var uri = Uri.parse(uriString);
   var parser = new UriParser(new UriTemplate(template));
@@ -277,13 +273,13 @@ expectParsePrefix(String template, String uriString, variables,
   }
 }
 
-expectMatch(String template, String uriString) {
+void expectMatch(String template, String uriString) {
   var uri = Uri.parse(uriString);
   var parser = new UriParser(new UriTemplate(template));
   expect(parser.matches(uri), true, reason: '${parser.pathRegex}');
 }
 
-expectNonMatch(String template, String uriString) {
+void expectNonMatch(String template, String uriString) {
   var uri = Uri.parse(uriString);
   expect(new UriParser(new UriTemplate(template)).matches(uri), false);
 }

@@ -2,15 +2,13 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-library uri.test;
+library uri.uri_test;
 
-import '../lib/uri.dart';
 import 'package:unittest/unittest.dart';
+import 'package:uri/uri.dart';
 
-main() {
-
+void main() {
   group('UriBuilder', () {
-
     test('should build a Uri', () {
       var builder = new UriBuilder()
         ..fragment = 'fragment'
@@ -33,7 +31,6 @@ main() {
   });
 
   group('UriMatch', () {
-
     test('should implement equals and hashCode', () {
       var match1 = new UriMatch(new TestUriPattern(123), Uri.parse('abc'),
           {'a': 'b'}, Uri.parse('bc'));

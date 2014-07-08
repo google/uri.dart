@@ -2,14 +2,14 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-library spec_tests;
+library uri.spec_tests;
 
 import 'dart:io';
 import 'dart:convert' show JSON;
 import 'package:unittest/unittest.dart';
 import 'package:uri/uri.dart';
 
-void runSpecTests(testname, {solo}) {
+void runSpecTests(String testname, {solo}) {
   var testFile = new File('test/uritemplate-test/$testname.json');
   var testJson = JSON.decode(testFile.readAsStringSync());
 
@@ -45,7 +45,7 @@ void runSpecTests(testname, {solo}) {
   }
 }
 
-main() {
+void main() {
   if (!new File('test/uritemplate-test/spec-examples.json').existsSync()) {
     print("spec examples not found. Make sure you run tests from the project"
         " directory, or try running `git submodule update`.");

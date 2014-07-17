@@ -8,27 +8,6 @@ import 'package:unittest/unittest.dart';
 import 'package:uri/uri.dart';
 
 void main() {
-  group('UriBuilder', () {
-    test('should build a Uri', () {
-      var builder = new UriBuilder()
-        ..fragment = 'fragment'
-        ..host = 'host'
-        ..path = 'path'
-        ..port = 42
-        ..scheme = 'ftp'
-        ..userInfo = 'userInfo'
-        ..queryParameters['q'] = 'v';
-      expect(builder.build(),
-          Uri.parse('ftp://userInfo@host:42/path?q=v#fragment'));
-    });
-
-    test('should build a Uri from a Uri', () {
-      var uri = Uri.parse('http://example.com:8080/path?a=b#fragment');
-      var builder = new UriBuilder.fromUri(uri);
-      expect(builder.build().toString(), uri.toString());
-    });
-
-  });
 
   group('UriMatch', () {
     test('should implement equals and hashCode', () {

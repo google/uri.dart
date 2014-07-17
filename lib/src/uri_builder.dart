@@ -4,6 +4,8 @@
 
 library uri.builder;
 
+import 'package:quiver/strings.dart' show emptyToNull;
+
 /**
  * A mutable holder for incrementally building [Uri]s.
  */
@@ -33,13 +35,13 @@ class UriBuilder {
         userInfo = uri.userInfo;
 
   Uri build() => new Uri(
-      fragment: fragment,
-      host: host,
-      path: path,
+      fragment: emptyToNull(fragment),
+      host: emptyToNull(host),
+      path: emptyToNull(path),
       port: port,
-      queryParameters: queryParameters,
-      scheme: scheme,
-      userInfo: userInfo);
+      queryParameters: queryParameters.isEmpty? null : queryParameters,
+      scheme: emptyToNull(scheme),
+      userInfo: emptyToNull(userInfo));
 
   String toString() => build().toString();
 }

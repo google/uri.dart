@@ -9,6 +9,7 @@ import 'package:path/path.dart' as path;
 
 import 'encoding_test.dart' as encoding;
 import 'spec_tests.dart' as spec;
+import 'uri_builder_test.dart' as builder;
 import 'uri_parser_test.dart' as parser;
 import 'uri_template_test.dart' as template;
 import 'uri_test.dart' as uri;
@@ -21,6 +22,7 @@ void main() {
     Directory.current = path.joinAll(cwd.sublist(0, cwd.length - 1));
   }
 
+  builder.main();
   encoding.main();
   parser.main();
   spec.main();

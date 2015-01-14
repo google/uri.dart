@@ -1,4 +1,4 @@
-## 0.9.4+1 
+## 0.9.5 
 
 * Widen dependency on quiver
 * Widen dependency on matcher

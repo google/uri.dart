@@ -39,7 +39,8 @@ class UriBuilder {
       host: emptyToNull(host),
       path: emptyToNull(path),
       port: port,
-      queryParameters: queryParameters.isEmpty? null : queryParameters,
+      queryParameters: queryParameters == null || queryParameters.isEmpty ?
+          null : queryParameters,
       scheme: nullToEmpty(scheme),
       userInfo: nullToEmpty(userInfo));
 

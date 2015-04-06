@@ -6,7 +6,7 @@ library uri.spec_tests;
 
 import 'dart:io';
 import 'dart:convert' show JSON;
-import 'package:unittest/unittest.dart';
+import 'package:test/test.dart';
 import 'package:uri/uri.dart';
 
 void runSpecTests(String testname, {solo}) {

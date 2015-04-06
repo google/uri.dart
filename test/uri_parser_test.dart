@@ -4,8 +4,12 @@
 
 library uri.uri_parser_test;
 
-import 'package:unittest/unittest.dart';
+import 'package:test/test.dart';
 import 'package:uri/uri.dart';
+
+// TODO(zoechi) workaround until the test package provides a mechanism to skip
+// tests
+skip_test(_, __) {}
 
 void main() {
   group('UriParser.parse', () {

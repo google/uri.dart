@@ -4,7 +4,7 @@
 
 library uri.uri_test;
 
-import 'package:unittest/unittest.dart';
+import 'package:test/test.dart';
 import 'package:uri/uri.dart';
 
 void main() {

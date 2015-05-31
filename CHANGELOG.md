@@ -1,3 +1,7 @@
+## UNRELEASED
+
+* Widen dependency on quiver
+
 ## 0.10.0
 
 * Migrate from the unittest to the new test package.

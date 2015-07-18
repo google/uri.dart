@@ -50,6 +50,7 @@ class UriParser extends UriPattern {
 
   final UriTemplate template;
   final bool _fragmentPrefixMatching;
+  final bool _queryParamsAreOptional;
 
   RegExp _pathRegex;
   List<String> _pathVariables;
@@ -61,8 +62,11 @@ class UriParser extends UriPattern {
   RegExp get fragmentRegex => _fragmentRegex;
   RegExp get pathRegex => _pathRegex;
 
-  UriParser(UriTemplate this.template, {bool fragmentPrefixMatching: true})
-      : _fragmentPrefixMatching = firstNonNull(fragmentPrefixMatching, true) {
+  UriParser(UriTemplate this.template, {
+    bool fragmentPrefixMatching: true,
+    bool queryParamsAreOptional: false})
+      : _fragmentPrefixMatching = firstNonNull(fragmentPrefixMatching, true),
+        _queryParamsAreOptional = firstNonNull(queryParamsAreOptional, false) {
     if (template == null) throw new ArgumentError("null template A");
     var compiler = new _Compiler(template);
     _pathRegex = compiler.pathRegex;
@@ -148,10 +152,10 @@ class UriParser extends UriPattern {
       for (var key in _queryVariables.keys) {
         var value = _queryVariables[key];
         if (value == null) {
-          if (!uri.queryParameters.containsKey(key)) {
-            return null;
-          } else {
+          if (_queryParamsAreOptional || uri.queryParameters.containsKey(key)) {
             parameters[key] = uri.queryParameters[key];
+          } else {
+            return null;
           }
         } else if (uri.queryParameters[key] != value) {
           return null;

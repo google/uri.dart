@@ -174,10 +174,11 @@ void main() {
 
     // TODO(justinfagnani) reenable when we figure out how to support both
     // prefixed and non-prefixed paths
-    skip_test('should not perform partial matches', () {
+    test('should not perform partial matches', () {
       expectNonMatch('/foo', '/foo2');
       expectNonMatch('/foo', '/foo/bar');
-    });
+    }, skip: 'TODO(justinfagnani) reenable when we figure out how to support '
+    'both prefixed and non-prefixed paths');
 
     test('should match fragments literals', () {
       expectMatch('/foo#xx', '/foo#xx');
@@ -219,6 +220,11 @@ void main() {
     test('should not match if query parameters not present', () {
       expectNonMatch('/foo{?a}', '/foo');
       expectNonMatch('/foo{?a,b}', '/foo?a=x');
+    });
+
+    test('should match if query parameters not present when queryParamsAreOptional is true', () {
+      expectMatch('/foo{?a}', '/foo', queryParamsAreOptional: true);
+      expectMatch('/foo{?a,b}', '/foo?a=x', queryParamsAreOptional: true);
     });
 
     test('should match a mix of query expressions and specified values', () {
@@ -277,9 +283,11 @@ void expectParsePrefix(String template, String uriString, variables,
   }
 }
 
-void expectMatch(String template, String uriString) {
+void expectMatch(String template, String uriString,
+                 { bool queryParamsAreOptional: false }) {
   var uri = Uri.parse(uriString);
-  var parser = new UriParser(new UriTemplate(template));
+  var parser = new UriParser(new UriTemplate(template),
+    queryParamsAreOptional: queryParamsAreOptional);
   expect(parser.matches(uri), true, reason: '${parser.pathRegex}');
 }
 

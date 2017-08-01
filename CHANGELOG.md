@@ -1,6 +1,6 @@
-## UNRELEASED
+## 0.11.1
 
-* Widen dependency on quiver
+* Widen dependency on package:quiver
 
 ## 0.10.0
 

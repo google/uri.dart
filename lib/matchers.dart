@@ -5,7 +5,7 @@
 library uri.matchers;
 
 import 'package:matcher/matcher.dart' show CustomMatcher, Description, Matcher,
-    allOf, anything;
+    anything;
 
 /**
  * Matches the individual parts of a [Uri]. If a matcher is not specified for a

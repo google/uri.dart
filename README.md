@@ -7,17 +7,17 @@ This package contains utilities for working with [URI][uri]s in Dart, mostly par
 
 [uri]: https://api.dartlang.org/docs/channels/stable/latest/dart_core/Uri.html
 
-##UriPattern
+## UriPattern
 
 UriPattern is an interface for classes that match and parse URIs, much like the [Pattern][pattern] is for Strings. It defines the methods `bool matches(Uri uri)` and `UriMatch match(Uri uri)`.
 
 [pattern]: https://api.dartlang.org/docs/channels/stable/latest/dart_core/Pattern.html
 
-##UriMatch
+## UriMatch
 
 UriMatch is the result of `UriPattern.match()`. It contains the parameters parsed out of a URI and the "rest" of the URI left over after parsing, which is useful for parsing a single URI with multiple relative URI patterns that form a hierarchy.
 
-##UriTemplate
+## UriTemplate
 
 UriTemplate is an implementation of [RFC 6570 URI Templates][rfc6570]. URI Templates are useful for generating URIs from data. UriTemplates are created from a template string, and then expanded with data to generate a URI:
 
@@ -27,19 +27,19 @@ String fredUri = template.expand({'user': 'fred'});
 print(fredUri); // prints: http://example.com/~fred/
 ````
 
-###Syntax
+### Syntax
 
 URI templates are strings made up of fixed and variable parts. The variable parts are described with _expressions_, which are places within single curly-braces: `{` and `}`.
 
 Expressions consist of an optional _operator_ and a comma-separated list of _variable_specifications_. Variable specifications consist of a variable name and an optional _modifier_. The operator applies to the whole expression and controls how reserved characters are expanded, the prefix and separator, if any, applied to the expansion, and whether to expand the variable as a key/value pair. Modifiers apply to each variable in the expression and allow truncating the value, or "exploding" list and maps into multiple key/value pairs.
 
-####Examples
+#### Examples
 
   * `http://example.com/~{username}/`
   * `http://example.com/dictionary/{term:1}/{term}`
   * `http://example.com/search{?q,lang}`
 
-####Operators
+#### Operators
 
 URI template expansions does more than simple variable replacement, it has facilities for generating paths, fragments, query strings and more. To control the expansion, expressions can use one of the supported operators:
 
@@ -55,7 +55,7 @@ URI template expansions does more than simple variable replacement, it has facil
 | &        | Form-style query continuation             |
 
 
-####Modifiers
+#### Modifiers
 
 Modifiers control 
 
@@ -68,7 +68,7 @@ Modifiers control
 
 [rfc6570]: http://tools.ietf.org/html/rfc6570
 
-##UriParser
+## UriParser
 
 UriParser parses URIs according to a UriTemplate, extracting paramaters based on the variables defined in the template.
 
@@ -86,6 +86,6 @@ Parsable templates have the following restrictions over expandable templates:
    * The ? operator can only be used once.
    * Fragments can only use the # operator
  
-##UriBuilder
+## UriBuilder
 
 UriBuilder is mutable container of URI components for incrementally building Uris.

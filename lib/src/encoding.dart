@@ -6,13 +6,13 @@ library uri.encoding;
 
 import 'package:utf/utf.dart' show codepointsToUtf8;
 
-const int _PERCENT = 0x25;
-const int _ZERO = 0x30;
-const int _NINE = 0x39;
-const int _UPPER_CASE_A = 0x41;
-const int _UPPER_CASE_F = 0x46;
-const int _LOWER_CASE_A = 0x61;
-const int _LOWER_CASE_F = 0x66;
+const int _percent = 0x25;
+const int _zero = 0x30;
+const int _nine = 0x39;
+const int _upperCaseA = 0x41;
+const int _upperCaseF = 0x46;
+const int _lowerCaseA = 0x61;
+const int _lowerCaseF = 0x66;
 
 // Tables of char-codes organized as a bit vector of 128 bits where
 // each bit indicate whether a character code on the 0-127 needs to
@@ -74,12 +74,12 @@ String pctEncode(String text, List<int> canonicalTable,
   }
 
   isHex(int ch) =>
-      (ch >= _ZERO && ch <= _NINE) ||
-      (ch >= _UPPER_CASE_A && ch <= _UPPER_CASE_F) ||
-      (ch >= _LOWER_CASE_A && ch <= _LOWER_CASE_F);
+      (ch >= _zero && ch <= _nine) ||
+      (ch >= _upperCaseA && ch <= _upperCaseF) ||
+      (ch >= _lowerCaseA && ch <= _lowerCaseF);
 
   isPctTriplet(int ch, int i) {
-    if (ch == _PERCENT && (i + 2 < text.length)) {
+    if (ch == _percent && (i + 2 < text.length)) {
       var t1 = text.codeUnitAt(i + 1);
       var t2 = text.codeUnitAt(i + 2);
       return isHex(t1) && isHex(t2);

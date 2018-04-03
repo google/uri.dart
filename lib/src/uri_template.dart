@@ -19,10 +19,8 @@ final _exprRegex = new RegExp(r'{('
     r'(?:,(?:\w|[%.])+(?:(?::\d+)|\*)?)*)' // rest varspecs
     r')}');
 final _literalVerifier = new RegExp(r'[{}]');
-final _simpleExprRegex = new RegExp(r'(?:\w|[%.,])+');
 final _varspecRegex = new RegExp(r'^((?:\w|[%.])+)((?::\d+)|(?:\*))?$');
 final _fragmentOrQueryRegex = new RegExp(r'([#?])');
-const _OPERATORS = r'+#./;?&';
 
 /**
  * Parsable templates have the following restrictions over expandable
@@ -62,7 +60,7 @@ class UriParser extends UriPattern {
   RegExp get fragmentRegex => _fragmentRegex;
   RegExp get pathRegex => _pathRegex;
 
-  UriParser(UriTemplate this.template,
+  UriParser(this.template,
       {bool fragmentPrefixMatching: true, bool queryParamsAreOptional: false})
       : _fragmentPrefixMatching = firstNonNull(fragmentPrefixMatching, true),
         _queryParamsAreOptional = firstNonNull(queryParamsAreOptional, false) {
@@ -78,7 +76,7 @@ class UriParser extends UriPattern {
   String toString() => '$template';
 
   /**
-   * Parses [uriString] returning the parameter values in a map keyed by the
+   * Parses [uri] returning the parameter values in a map keyed by the
    * variable names in the template.
    */
   Map<String, String> parse(Uri uri) {
@@ -219,16 +217,15 @@ class UriTemplate {
   final String template;
   final List _parts;
 
-  UriTemplate(String template)
-      : template = template,
-        _parts = _compile(template);
+  UriTemplate(this.template) : _parts = _compile(template);
 
   String toString() => template;
 
   static UnmodifiableListView _compile(String template) {
     var parts = [];
     template.splitMapJoin(_exprRegex, onMatch: (match) {
-      return parts.add(match);
+      parts.add(match);
+      return null;
     }, onNonMatch: (String nonMatch) {
       if (_literalVerifier.hasMatch(nonMatch)) {
         throw new ParseException(nonMatch);
@@ -271,7 +268,7 @@ class UriTemplate {
               var itemSeparator = explode ? separator : ',';
 
               var value = variables[varname];
-              var str;
+              String str;
               if (value is Iterable) {
                 if (prefixLength != 0) throw new ParseException(expr);
                 if (value.isNotEmpty) {
@@ -309,7 +306,7 @@ class UriTemplate {
             })
             .where((e) => e != null)
             .toList(growable: false);
-        if (result.length > 0) {
+        if (result.isNotEmpty) {
           if (!(op == '' || op == '+')) {
             sb.write(op);
           }
@@ -535,8 +532,13 @@ Map<String, String> _parseMap(String s, String separator) {
 
 List _splitLiteral(String literal) {
   var subparts = [];
-  literal.splitMapJoin(_fragmentOrQueryRegex,
-      onMatch: (m) => subparts.add(m), onNonMatch: (s) => subparts.add(s));
+  literal.splitMapJoin(_fragmentOrQueryRegex, onMatch: (m) {
+    subparts.add(m);
+    return null;
+  }, onNonMatch: (s) {
+    subparts.add(s);
+    return null;
+  });
   return subparts;
 }
 

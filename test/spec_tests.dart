@@ -4,8 +4,9 @@
 
 library uri.spec_tests;
 
-import 'dart:io';
 import 'dart:convert' show JSON;
+import 'dart:io';
+
 import 'package:test/test.dart';
 import 'package:uri/uri.dart';
 
@@ -27,8 +28,8 @@ void runSpecTests(String testname, {solo}) {
           if (expectation == false) {
             expect(() {
               var template = new UriTemplate(templateString);
-              var r = template.expand(variables);
-            }, throws, reason: templateString);
+              template.expand(variables);
+            }, throwsArgumentError, reason: templateString);
           } else {
             var template = new UriTemplate(templateString);
             var r = template.expand(variables);

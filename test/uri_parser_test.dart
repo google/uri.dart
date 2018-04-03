@@ -7,10 +7,6 @@ library uri.uri_parser_test;
 import 'package:test/test.dart';
 import 'package:uri/uri.dart';
 
-// TODO(zoechi) workaround until the test package provides a mechanism to skip
-// tests
-skip_test(_, __) {}
-
 void main() {
   group('UriParser.parse', () {
     test('should parse simple variables', () {
@@ -200,7 +196,8 @@ void main() {
     });
 
     test('should throw on out-of-order URI parts', () {
-      expect(() => new UriParser(new UriTemplate('/foo#c?a=x&b=y')), throws);
+      expect(() => new UriParser(new UriTemplate('/foo#c?a=x&b=y')),
+          throwsA(const isInstanceOf<ParseException>()));
     });
 
     test('should match paths using simple variables', () {

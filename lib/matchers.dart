@@ -59,7 +59,7 @@ _FeatureMatcher _feature(
  * the [CustomMatcher.featureValueOf] method by calling [extract].
  */
 class _FeatureMatcher extends CustomMatcher {
-  final extract;
+  final Function extract;
 
   _FeatureMatcher(String itemName, String featureName, matcher, this.extract)
       : super('$itemName with $featureName', featureName, matcher);
@@ -75,7 +75,7 @@ class _FeatureMatcher extends CustomMatcher {
  *
  * When checking expectations of a complex object in a test, it's useful to be
  * able to specify matchers against several different features of the object at
- * once. With `CompoundMatcher` and [FeatureMatcher] this task is relatively
+ * once. With `CompoundMatcher` and [_FeatureMatcher] this task is relatively
  * simple and makes tests easier to read.
  *
  * ## Example:
@@ -119,7 +119,7 @@ class _CompoundMatcher<T> extends Matcher {
 
   _CompoundMatcher(this._matchers);
 
-  bool matches(T item, Map matchState) {
+  bool matches(covariant T item, Map matchState) {
     var states = new List.generate(_matchers.length, (i) => {});
     var statuses = new List.filled(_matchers.length, true);
     matchState['states'] = states;
@@ -133,8 +133,8 @@ class _CompoundMatcher<T> extends Matcher {
     return result;
   }
 
-  Description describeMismatch(
-      T item, Description mismatchDescription, Map matchState, bool verbose) {
+  Description describeMismatch(covariant T item,
+      Description mismatchDescription, Map matchState, bool verbose) {
     var statuses = matchState['statuses'];
     var states = matchState['states'];
 
@@ -148,7 +148,9 @@ class _CompoundMatcher<T> extends Matcher {
   }
 
   Description describe(Description description) {
-    _matchers.forEach((m) => m.describe(description));
+    for (var m in _matchers) {
+      m.describe(description);
+    }
     return description;
   }
 }

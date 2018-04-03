@@ -223,15 +223,19 @@ class UriTemplate {
 
   static UnmodifiableListView _compile(String template) {
     var parts = [];
-    template.splitMapJoin(_exprRegex, onMatch: (match) {
-      parts.add(match);
-      return null;
-    }, onNonMatch: (String nonMatch) {
-      if (_literalVerifier.hasMatch(nonMatch)) {
-        throw new ParseException(nonMatch);
-      }
-      if (nonMatch.isNotEmpty) parts.add(nonMatch);
-    });
+    template.splitMapJoin(
+      _exprRegex,
+      onMatch: (match) {
+        parts.add(match);
+        return null;
+      },
+      onNonMatch: (String nonMatch) {
+        if (_literalVerifier.hasMatch(nonMatch)) {
+          throw new ParseException(nonMatch);
+        }
+        if (nonMatch.isNotEmpty) parts.add(nonMatch);
+      },
+    );
     return new UnmodifiableListView(parts);
   }
 
@@ -532,13 +536,17 @@ Map<String, String> _parseMap(String s, String separator) {
 
 List _splitLiteral(String literal) {
   var subparts = [];
-  literal.splitMapJoin(_fragmentOrQueryRegex, onMatch: (m) {
-    subparts.add(m);
-    return null;
-  }, onNonMatch: (s) {
-    subparts.add(s);
-    return null;
-  });
+  literal.splitMapJoin(
+    _fragmentOrQueryRegex,
+    onMatch: (m) {
+      subparts.add(m);
+      return null;
+    },
+    onNonMatch: (s) {
+      subparts.add(s);
+      return null;
+    },
+  );
   return subparts;
 }
 

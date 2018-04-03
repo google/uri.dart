@@ -1,5 +1,5 @@
 name: uri
-version: 0.11.1
+version: 0.11.2-dev
 author: Dart Authors <misc@dartlang.org>
 description: Utilities for building and parsing URIs
 homepage: https://github.com/google/uri.dart
@@ -7,7 +7,7 @@ environment:
   sdk: '>=1.12.0'
 dependencies:
   matcher: '>=0.12.0 <0.13.0'
-  quiver: '>=0.17.0 <0.26.0'
+  quiver: '>=0.17.0 <0.30.0'
   utf: '>=0.8.10 <=0.10.0'
 dev_dependencies:
   test: '>=0.12.0 <=0.13.0'

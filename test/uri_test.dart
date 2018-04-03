@@ -8,7 +8,6 @@ import 'package:test/test.dart';
 import 'package:uri/uri.dart';
 
 void main() {
-
   group('UriMatch', () {
     test('should implement equals and hashCode', () {
       var match1 = new UriMatch(new TestUriPattern(123), Uri.parse('abc'),
@@ -38,7 +37,6 @@ void main() {
           {'a': 'b'}, Uri.parse('bd'));
       expect(match1.hashCode, isNot(match6.hashCode));
       expect(match1, isNot(match6));
-
     });
   });
 }

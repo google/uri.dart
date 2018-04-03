@@ -12,10 +12,10 @@ void main() {
     test('should encode % chars, but preserve pct-encoded triplets', () {
       expect(pctEncode('%25', reservedTable, allowPctTriplets: true), '%25');
       expect(pctEncode('%', reservedTable, allowPctTriplets: true), '%25');
-      expect(pctEncode('%%25', reservedTable, allowPctTriplets: true),
-          '%25%25');
-      expect(pctEncode('%25%2', reservedTable, allowPctTriplets: true),
-          '%25%252');
+      expect(
+          pctEncode('%%25', reservedTable, allowPctTriplets: true), '%25%25');
+      expect(
+          pctEncode('%25%2', reservedTable, allowPctTriplets: true), '%25%252');
     });
 
     test('should allow reserved chars', () {

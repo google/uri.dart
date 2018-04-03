@@ -37,8 +37,9 @@ class UriBuilder {
       host: _emptyToNull(host),
       path: _emptyToNull(path),
       port: port,
-      queryParameters: queryParameters == null || queryParameters.isEmpty ?
-          null : queryParameters,
+      queryParameters: queryParameters == null || queryParameters.isEmpty
+          ? null
+          : queryParameters,
       scheme: scheme ?? "",
       userInfo: userInfo ?? "");
 

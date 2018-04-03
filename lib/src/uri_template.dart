@@ -62,9 +62,8 @@ class UriParser extends UriPattern {
   RegExp get fragmentRegex => _fragmentRegex;
   RegExp get pathRegex => _pathRegex;
 
-  UriParser(UriTemplate this.template, {
-    bool fragmentPrefixMatching: true,
-    bool queryParamsAreOptional: false})
+  UriParser(UriTemplate this.template,
+      {bool fragmentPrefixMatching: true, bool queryParamsAreOptional: false})
       : _fragmentPrefixMatching = firstNonNull(fragmentPrefixMatching, true),
         _queryParamsAreOptional = firstNonNull(queryParamsAreOptional, false) {
     if (template == null) throw new ArgumentError("null template A");
@@ -166,8 +165,8 @@ class UriParser extends UriPattern {
     if (_fragmentRegex != null) {
       if (uri.fragment.isEmpty) return null;
       var match = _fragmentRegex.matchAsPrefix(uri.fragment);
-      var prefixMatch = _fragmentPrefixMatching &&
-          _pathSeparators.hasMatch(uri.fragment);
+      var prefixMatch =
+          _fragmentPrefixMatching && _pathSeparators.hasMatch(uri.fragment);
       if (match == null || (!prefixMatch && match.end != uri.fragment.length)) {
         return null;
       } else {
@@ -228,14 +227,14 @@ class UriTemplate {
 
   static UnmodifiableListView _compile(String template) {
     var parts = [];
-    template.splitMapJoin(_exprRegex,
-        onMatch: (match) { return parts.add(match); },
-        onNonMatch: (String nonMatch) {
-          if (_literalVerifier.hasMatch(nonMatch)) {
-            throw new ParseException(nonMatch);
-          }
-          if (nonMatch.isNotEmpty) parts.add(nonMatch);
-        });
+    template.splitMapJoin(_exprRegex, onMatch: (match) {
+      return parts.add(match);
+    }, onNonMatch: (String nonMatch) {
+      if (_literalVerifier.hasMatch(nonMatch)) {
+        throw new ParseException(nonMatch);
+      }
+      if (nonMatch.isNotEmpty) parts.add(nonMatch);
+    });
     return new UnmodifiableListView(parts);
   }
 
@@ -250,58 +249,66 @@ class UriTemplate {
         Match match = part;
         var expr = match.group(3);
         var op = match.group(2);
-        var separator = ['', '+', '#'].contains(op) ? ','
-            : (op == '?') ? '&' : op;
+        var separator =
+            ['', '+', '#'].contains(op) ? ',' : (op == '?') ? '&' : op;
         bool formStyle = [';', '?', '&'].contains(op);
         bool allowReserved = ['+', '#'].contains(op);
 
-        var result = expr.split(',').map((String varspec) {
-          var varname = varspec;
-          int prefixLength = 0;
-          int prefixModIndex = varspec.lastIndexOf(':');
-          if (prefixModIndex != -1) {
-            varname = varspec.substring(0, prefixModIndex);
-            prefixLength = int.parse(varspec.substring(prefixModIndex + 1));
-          }
-          bool explode = varspec[varspec.length - 1] == '*';
-          if (explode) {
-            varname = varspec.substring(0, varspec.length - 1);
-          }
-          var itemSeparator = explode ? separator : ',';
-
-          var value = variables[varname];
-          var str;
-          if (value is Iterable) {
-            if (prefixLength != 0) throw new ParseException(expr);
-            if (value.isNotEmpty) {
-              if (explode && formStyle) {
-                itemSeparator = '$itemSeparator$varname=';
+        var result = expr
+            .split(',')
+            .map((String varspec) {
+              var varname = varspec;
+              int prefixLength = 0;
+              int prefixModIndex = varspec.lastIndexOf(':');
+              if (prefixModIndex != -1) {
+                varname = varspec.substring(0, prefixModIndex);
+                prefixLength = int.parse(varspec.substring(prefixModIndex + 1));
               }
-              str = value.map((i) => _encode('$i', allowReserved))
-                  .join(itemSeparator);
-              if (formStyle) str = '$varname=$str';
-            }
-          } else if (value is Map) {
-            if (prefixLength != 0) throw new ParseException(expr);
-            if (value.isNotEmpty) {
-              var kvSeparator = explode ? '=' : ',';
-              str = value.keys.map((k) => _encode(k) + kvSeparator +
-                  _encode('${value[k]}', allowReserved)
-              ).join(itemSeparator);
-              if (formStyle && !explode) str = '$varname=$str';
-            }
-          } else if (value != null) {
-            str = '$value';
-            if (prefixLength > 0 && prefixLength < str.length) {
-              str = str.substring(0, prefixLength);
-            }
-            str = _encode(str, allowReserved);
-            if (formStyle) {
-              str = (str.isEmpty && op == ';') ? varname : '$varname=$str';
-            }
-          }
-          return str;
-        }).where((e) => e != null).toList(growable: false);
+              bool explode = varspec[varspec.length - 1] == '*';
+              if (explode) {
+                varname = varspec.substring(0, varspec.length - 1);
+              }
+              var itemSeparator = explode ? separator : ',';
+
+              var value = variables[varname];
+              var str;
+              if (value is Iterable) {
+                if (prefixLength != 0) throw new ParseException(expr);
+                if (value.isNotEmpty) {
+                  if (explode && formStyle) {
+                    itemSeparator = '$itemSeparator$varname=';
+                  }
+                  str = value
+                      .map((i) => _encode('$i', allowReserved))
+                      .join(itemSeparator);
+                  if (formStyle) str = '$varname=$str';
+                }
+              } else if (value is Map) {
+                if (prefixLength != 0) throw new ParseException(expr);
+                if (value.isNotEmpty) {
+                  var kvSeparator = explode ? '=' : ',';
+                  str = value.keys
+                      .map((k) =>
+                          _encode(k) +
+                          kvSeparator +
+                          _encode('${value[k]}', allowReserved))
+                      .join(itemSeparator);
+                  if (formStyle && !explode) str = '$varname=$str';
+                }
+              } else if (value != null) {
+                str = '$value';
+                if (prefixLength > 0 && prefixLength < str.length) {
+                  str = str.substring(0, prefixLength);
+                }
+                str = _encode(str, allowReserved);
+                if (formStyle) {
+                  str = (str.isEmpty && op == ';') ? varname : '$varname=$str';
+                }
+              }
+              return str;
+            })
+            .where((e) => e != null)
+            .toList(growable: false);
         if (result.length > 0) {
           if (!(op == '' || op == '+')) {
             sb.write(op);
@@ -416,8 +423,7 @@ class _Compiler {
         var subpart = literalParts[i];
         if (subpart is String) {
           queryVariables.addAll(_parseMap(subpart, '&'));
-        }
-        else if ((subpart as Match).group(1) == '?') {
+        } else if ((subpart as Match).group(1) == '?') {
           throw new ParseException('multiple queries');
         } else if ((subpart as Match).group(1) == '#') {
           return _compileFragment(prevParts: literalParts.sublist(i + 1));
@@ -501,7 +507,6 @@ class _Compiler {
       fragmentRegex = new RegExp(fragmentBuffer.toString());
     }
   }
-
 }
 
 Map<String, String> _parseMap(String s, String separator) {
@@ -515,7 +520,7 @@ Map<String, String> _parseMap(String s, String separator) {
       var value = '';
       // handle key1=,,key2=x
       if (eqIndex == kvPair.length - 1) {
-        if (i < kvPairs.length - 1 && kvPairs[i+1] == '') {
+        if (i < kvPairs.length - 1 && kvPairs[i + 1] == '') {
           value = ',';
         }
         // else value = '';
@@ -531,8 +536,7 @@ Map<String, String> _parseMap(String s, String separator) {
 List _splitLiteral(String literal) {
   var subparts = [];
   literal.splitMapJoin(_fragmentOrQueryRegex,
-      onMatch: (m) => subparts.add(m),
-      onNonMatch: (s) => subparts.add(s));
+      onMatch: (m) => subparts.add(m), onNonMatch: (s) => subparts.add(s));
   return subparts;
 }
 

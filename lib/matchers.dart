@@ -4,30 +4,32 @@
 
 library uri.matchers;
 
-import 'package:matcher/matcher.dart' show CustomMatcher, Description, Matcher,
-    anything;
+import 'package:matcher/matcher.dart'
+    show CustomMatcher, Description, Matcher, anything;
 
 /**
  * Matches the individual parts of a [Uri]. If a matcher is not specified for a
  * part, the default matcher is [anything]. This allows you to just match on a
  * single part, like the scheme, while ignoring the rest.
  */
-Matcher matchesUri({
-  fragment: anything,
-  host: anything,
-  path: anything,
-  port: anything,
-  queryParameters: anything,
-  scheme: anything,
-  userInfo: anything
-}) => new _CompoundMatcher([
-    _feature('Uri', 'fragment', fragment, (i) => i.fragment),
-    _feature('Uri', 'host', host, (i) => i.host),
-    _feature('Uri', 'path', path, (i) => i.path),
-    _feature('Uri', 'port', port, (i) => i.port),
-    _feature('Uri', 'queryParameters', queryParameters, (i) => i.queryParameters),
-    _feature('Uri', 'scheme', scheme, (i) => i.scheme),
-    _feature('Uri', 'userInfo', userInfo, (i) => userInfo)]);
+Matcher matchesUri(
+        {fragment: anything,
+        host: anything,
+        path: anything,
+        port: anything,
+        queryParameters: anything,
+        scheme: anything,
+        userInfo: anything}) =>
+    new _CompoundMatcher([
+      _feature('Uri', 'fragment', fragment, (i) => i.fragment),
+      _feature('Uri', 'host', host, (i) => i.host),
+      _feature('Uri', 'path', path, (i) => i.path),
+      _feature('Uri', 'port', port, (i) => i.port),
+      _feature(
+          'Uri', 'queryParameters', queryParameters, (i) => i.queryParameters),
+      _feature('Uri', 'scheme', scheme, (i) => i.scheme),
+      _feature('Uri', 'userInfo', userInfo, (i) => userInfo)
+    ]);
 
 /**
  * Matches the parts of a [Uri] against [expected], all of which must equal for
@@ -47,7 +49,8 @@ Matcher equalsUri(Uri expected) => matchesUri(
 /**
  * Convenience function for creating [_FeatureMatcher]s.
  */
-_FeatureMatcher _feature(String description, String name, matcher, extract(o)) =>
+_FeatureMatcher _feature(
+        String description, String name, matcher, extract(o)) =>
     new _FeatureMatcher(description, name, matcher, extract);
 
 /**
@@ -130,15 +133,15 @@ class _CompoundMatcher<T> extends Matcher {
     return result;
   }
 
-  Description describeMismatch(T item, Description mismatchDescription,
-      Map matchState, bool verbose) {
+  Description describeMismatch(
+      T item, Description mismatchDescription, Map matchState, bool verbose) {
     var statuses = matchState['statuses'];
     var states = matchState['states'];
 
     for (var i = 0; i < _matchers.length; i++) {
       if (!statuses[i]) {
-        _matchers[i].describeMismatch(item, mismatchDescription, states[i],
-            verbose);
+        _matchers[i]
+            .describeMismatch(item, mismatchDescription, states[i], verbose);
       }
     }
     return mismatchDescription;

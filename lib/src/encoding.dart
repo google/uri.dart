@@ -20,41 +20,43 @@ const int _LOWER_CASE_F = 0x66;
 
 // The unreserved characters of RFC 3986.
 const unreservedTable = const [
-              //             LSB            MSB
-              //              |              |
-    0x0000,   // 0x00 - 0x0f  0000000000000000
-    0x0000,   // 0x10 - 0x1f  0000000000000000
-              //                           -.
-    0x6000,   // 0x20 - 0x2f  0000000000000110
-              //              0123456789
-    0x03ff,   // 0x30 - 0x3f  1111111111000000
-              //               ABCDEFGHIJKLMNO
-    0xfffe,   // 0x40 - 0x4f  0111111111111111
-              //              PQRSTUVWXYZ    _
-    0x87ff,   // 0x50 - 0x5f  1111111111100001
-              //               abcdefghijklmno
-    0xfffe,   // 0x60 - 0x6f  0111111111111111
-              //              pqrstuvwxyz   ~
-    0x47ff];  // 0x70 - 0x7f  1111111111100010
+  //             LSB            MSB
+  //              |              |
+  0x0000, // 0x00 - 0x0f  0000000000000000
+  0x0000, // 0x10 - 0x1f  0000000000000000
+  //                           -.
+  0x6000, // 0x20 - 0x2f  0000000000000110
+  //              0123456789
+  0x03ff, // 0x30 - 0x3f  1111111111000000
+  //               ABCDEFGHIJKLMNO
+  0xfffe, // 0x40 - 0x4f  0111111111111111
+  //              PQRSTUVWXYZ    _
+  0x87ff, // 0x50 - 0x5f  1111111111100001
+  //               abcdefghijklmno
+  0xfffe, // 0x60 - 0x6f  0111111111111111
+  //              pqrstuvwxyz   ~
+  0x47ff
+]; // 0x70 - 0x7f  1111111111100010
 
 // Table of reserved characters
 const reservedTable = const [
-              //             LSB            MSB
-              //              |              |
-    0x0000,   // 0x00 - 0x0f  0000000000000000
-    0x0000,   // 0x10 - 0x1f  0000000000000000
-              //               ! #$ &'()*+,-./
-    0xffda,   // 0x20 - 0x2f  0101101111111111
-              //              0123456789:; = ?
-    0xafff,   // 0x30 - 0x3f  1111111111110101
-              //              @ABCDEFGHIJKLMNO
-    0xffff,   // 0x40 - 0x4f  1111111111111111
-              //              PQRSTUVWXYZ[ ] _
-    0xafff,   // 0x50 - 0x5f  1111111111110101
-              //               abcdefghijklmno
-    0xfffe,   // 0x60 - 0x6f  0111111111111111
-              //              pqrstuvwxyz   ~
-    0x47ff];  // 0x70 - 0x7f  1111111111100010
+  //             LSB            MSB
+  //              |              |
+  0x0000, // 0x00 - 0x0f  0000000000000000
+  0x0000, // 0x10 - 0x1f  0000000000000000
+  //               ! #$ &'()*+,-./
+  0xffda, // 0x20 - 0x2f  0101101111111111
+  //              0123456789:; = ?
+  0xafff, // 0x30 - 0x3f  1111111111110101
+  //              @ABCDEFGHIJKLMNO
+  0xffff, // 0x40 - 0x4f  1111111111111111
+  //              PQRSTUVWXYZ[ ] _
+  0xafff, // 0x50 - 0x5f  1111111111110101
+  //               abcdefghijklmno
+  0xfffe, // 0x60 - 0x6f  0111111111111111
+  //              pqrstuvwxyz   ~
+  0x47ff
+]; // 0x70 - 0x7f  1111111111100010
 
 /**
  * Copied from dart.core.Uri and modified to preserve pct-encoded triplets and
@@ -65,13 +67,14 @@ const reservedTable = const [
  * that appear in [canonicalTable], and returns the escaped string.
  */
 String pctEncode(String text, List<int> canonicalTable,
-                 {bool allowPctTriplets: false}) {
+    {bool allowPctTriplets: false}) {
   byteToHex(int v) {
     final String hex = '0123456789ABCDEF';
     return '%${hex[v >> 4]}${hex[v & 0x0f]}';
   }
 
-  isHex(int ch) => (ch >= _ZERO && ch <= _NINE) ||
+  isHex(int ch) =>
+      (ch >= _ZERO && ch <= _NINE) ||
       (ch >= _UPPER_CASE_A && ch <= _UPPER_CASE_F) ||
       (ch >= _LOWER_CASE_A && ch <= _LOWER_CASE_F);
 

@@ -21,16 +21,13 @@ void main() {
     test('should parse variables with non-alpha characters', () {
       var unreserved = ['-', '.', '_', '~'];
       for (var c in unreserved) {
-        expectParse('/{a}', '/one${c}two', {'a': 'one${c}two'},
-            reverse: true);
-        expectParse('/{+a}', '/one${c}two', {'a': 'one${c}two'},
-            reverse: true);
+        expectParse('/{a}', '/one${c}two', {'a': 'one${c}two'}, reverse: true);
+        expectParse('/{+a}', '/one${c}two', {'a': 'one${c}two'}, reverse: true);
       }
     });
 
     test('should parse multiple variables per expression', () {
-      expectParse('{a,b}', 'xx,yy', {'a': 'xx', 'b': 'yy'},
-          reverse: true);
+      expectParse('{a,b}', 'xx,yy', {'a': 'xx', 'b': 'yy'}, reverse: true);
     });
 
     test('should ignore explode and prefix modifiers', () {
@@ -78,13 +75,10 @@ void main() {
     test('should parse query and fragment expressions', () {
       expectParse('/foo{?a}{#b}', '/foo?a=xx#yy', {'a': 'xx', 'b': 'yy'});
     });
-
   });
 
   group('UriParser.match', () {
-
     group('on paths', () {
-
       test('should match a simple path', () {
         expectParsePrefix('/foo', '/foo', {}, restPath: '');
       });
@@ -102,12 +96,13 @@ void main() {
       });
 
       test('should match a path prefix with expressions', () {
-        expectParsePrefix('/foo/{a}', '/foo/bar/baz', {'a' :'bar'},
+        expectParsePrefix('/foo/{a}', '/foo/bar/baz', {'a': 'bar'},
             restPath: 'baz');
-        expectParsePrefix('/fo{a}', '/foo/bar/baz', {'a' :'o'},
+        expectParsePrefix('/fo{a}', '/foo/bar/baz', {'a': 'o'},
             restPath: 'bar/baz');
-        expectParsePrefix('/foo/{a}/baz/{b}', '/foo/bar/baz/qux',
-            {'a' :'bar', 'b': 'qux'}, restPath: '');
+        expectParsePrefix(
+            '/foo/{a}/baz/{b}', '/foo/bar/baz/qux', {'a': 'bar', 'b': 'qux'},
+            restPath: '');
       });
 
       test('should preserve query parameters in UriMatch.rest', () {
@@ -128,16 +123,16 @@ void main() {
       // proposed behavior: perform a prefix match when the fragment
       // contains path seperators: '/' or '.'
       test('should match a fragment prefix', () {
-        expectParsePrefix('/foo#bar', '/foo#bar/baz', {}, restPath: '',
-            restFragment: 'baz');
-        expectParsePrefix('/foo#bar', '/foo#bar.baz', {}, restPath: '',
-            restFragment: 'baz');
-        expectParsePrefix('/foo#bar/', '/foo#bar/baz', {}, restPath: '',
-            restFragment: 'baz');
-        expectParsePrefix('/foo#bar', '/foo#bar/baz/qux', {}, restPath: '',
-            restFragment: 'baz/qux');
-        expectParsePrefix('/foo#bar', '/foo#bar.baz.qux', {}, restPath: '',
-            restFragment: 'baz.qux');
+        expectParsePrefix('/foo#bar', '/foo#bar/baz', {},
+            restPath: '', restFragment: 'baz');
+        expectParsePrefix('/foo#bar', '/foo#bar.baz', {},
+            restPath: '', restFragment: 'baz');
+        expectParsePrefix('/foo#bar/', '/foo#bar/baz', {},
+            restPath: '', restFragment: 'baz');
+        expectParsePrefix('/foo#bar', '/foo#bar/baz/qux', {},
+            restPath: '', restFragment: 'baz/qux');
+        expectParsePrefix('/foo#bar', '/foo#bar.baz.qux', {},
+            restPath: '', restFragment: 'baz.qux');
       });
 
       // proposed behavior: prefix matches must match an entire path segment
@@ -158,11 +153,9 @@ void main() {
     test('should not match a non-mathcing query', () {
       expectParsePrefix('/foo?a=x', '/foo?b=y', {}, matches: false);
     });
-
   });
 
   group('UriParser.matches', () {
-
     // expressionless cases
     test('should match path literals', () {
       expectMatch('/foo', '/foo');
@@ -177,8 +170,9 @@ void main() {
     test('should not perform partial matches', () {
       expectNonMatch('/foo', '/foo2');
       expectNonMatch('/foo', '/foo/bar');
-    }, skip: 'TODO(justinfagnani) reenable when we figure out how to support '
-    'both prefixed and non-prefixed paths');
+    },
+        skip: 'TODO(justinfagnani) reenable when we figure out how to support '
+            'both prefixed and non-prefixed paths');
 
     test('should match fragments literals', () {
       expectMatch('/foo#xx', '/foo#xx');
@@ -222,7 +216,9 @@ void main() {
       expectNonMatch('/foo{?a,b}', '/foo?a=x');
     });
 
-    test('should match if query parameters not present when queryParamsAreOptional is true', () {
+    test(
+        'should match if query parameters not present when queryParamsAreOptional is true',
+        () {
       expectMatch('/foo{?a}', '/foo', queryParamsAreOptional: true);
       expectMatch('/foo{?a,b}', '/foo?a=x', queryParamsAreOptional: true);
     });
@@ -257,7 +253,8 @@ void main() {
   });
 }
 
-void expectParse(String template, String uriString, variables, {reverse: false}) {
+void expectParse(String template, String uriString, variables,
+    {reverse: false}) {
   var uri = Uri.parse(uriString);
   var uriTemplate = new UriTemplate(template);
   var parser = new UriParser(uriTemplate);
@@ -284,10 +281,10 @@ void expectParsePrefix(String template, String uriString, variables,
 }
 
 void expectMatch(String template, String uriString,
-                 { bool queryParamsAreOptional: false }) {
+    {bool queryParamsAreOptional: false}) {
   var uri = Uri.parse(uriString);
   var parser = new UriParser(new UriTemplate(template),
-    queryParamsAreOptional: queryParamsAreOptional);
+      queryParamsAreOptional: queryParamsAreOptional);
   expect(parser.matches(uri), true, reason: '${parser.pathRegex}');
 }
 

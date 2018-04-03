@@ -11,7 +11,6 @@ import 'package:quiver/core.dart' show hash4;
  * An interface for objects that match [Uri]s.
  */
 abstract class UriPattern {
-
   /**
    * Returns `true` if [uri] is matched by this pattern.
    */
@@ -28,7 +27,6 @@ abstract class UriPattern {
    */
   Uri expand(Map<String, Object> parameters);
 }
-
 
 /**
  * The result of a [UriPattern.match] call.

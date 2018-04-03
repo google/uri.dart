@@ -9,7 +9,6 @@ import 'package:uri/uri.dart';
 
 main() {
   group('UriTemplate', () {
-
     test('should have a working equals method', () {
       var a1 = new UriTemplate('a');
       var a2 = new UriTemplate('a');
@@ -27,6 +26,5 @@ main() {
       // for a single character.
       expect(a.hashCode, isNot(b.hashCode));
     });
-
   });
 }

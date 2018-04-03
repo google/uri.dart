@@ -1,11 +1,8 @@
-URI
-===
+[![Build Status](https://travis-ci.org/google/uri.dart.svg?branch=master)](https://travis-ci.org/google/uri.dart)
 
-This package contains utilities for working with [URI][uri]s in Dart, mostly parsing and generating URIs.
+Utilities for working with [URI][uri]s in Dart, mostly parsing and generating URIs.
 
-[![Build Status](https://drone.io/github.com/dart-lang/uri-template/status.png)](https://drone.io/github.com/dart-lang/uri-template/latest)
-
-[uri]: https://api.dartlang.org/docs/channels/stable/latest/dart_core/Uri.html
+[uri]: https://api.dartlang.org/stable/1.24.3/dart-core/Uri-class.html
 
 ## UriPattern
 
@@ -21,11 +18,11 @@ UriMatch is the result of `UriPattern.match()`. It contains the parameters parse
 
 UriTemplate is an implementation of [RFC 6570 URI Templates][rfc6570]. URI Templates are useful for generating URIs from data. UriTemplates are created from a template string, and then expanded with data to generate a URI:
 
-````
+```dart
 var template = new UriTemplate("http://example.com/~{user}/");
 String fredUri = template.expand({'user': 'fred'});
 print(fredUri); // prints: http://example.com/~fred/
-````
+```
 
 ### Syntax
 

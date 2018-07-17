@@ -80,7 +80,7 @@ class UriParser extends UriPattern {
    * variable names in the template.
    */
   Map<String, String> parse(Uri uri) {
-    var parameters = {};
+    var parameters = <String, String>{};
 
     if (_pathVariables.isNotEmpty) {
       var match = _pathRegex.firstMatch(uri.path);
@@ -116,7 +116,7 @@ class UriParser extends UriPattern {
   }
 
   UriMatch match(Uri uri) {
-    var parameters = {};
+    var parameters = <String, String>{};
     var restUriBuilder = new UriBuilder();
 
     if (_pathRegex != null) {
@@ -511,7 +511,7 @@ class _Compiler {
 }
 
 Map<String, String> _parseMap(String s, String separator) {
-  var map = {};
+  var map = <String, String>{};
   var kvPairs = s.split(separator);
   for (int i = 0; i < kvPairs.length; i++) {
     String kvPair = kvPairs[i];

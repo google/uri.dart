@@ -1,3 +1,7 @@
+## 0.11.3
+* Change upper bound to 3.0.0.
+* Fix runtime type errors in tests.
+
 ## 0.11.2
 
 * Support the latest release of `package:quiver`.

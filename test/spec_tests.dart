@@ -4,7 +4,7 @@
 
 library uri.spec_tests;
 
-import 'dart:convert' show JSON;
+import 'dart:convert' show json;
 import 'dart:io';
 
 import 'package:test/test.dart';
@@ -12,7 +12,7 @@ import 'package:uri/uri.dart';
 
 void runSpecTests(String testname, {solo}) {
   var testFile = new File('test/uritemplate-test/$testname.json');
-  var testJson = JSON.decode(testFile.readAsStringSync());
+  var testJson = json.decode(testFile.readAsStringSync());
 
   for (var specGroup in testJson.keys) {
     group(specGroup, () {

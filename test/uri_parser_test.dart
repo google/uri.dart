@@ -197,7 +197,7 @@ void main() {
 
     test('should throw on out-of-order URI parts', () {
       expect(() => new UriParser(new UriTemplate('/foo#c?a=x&b=y')),
-          throwsA(const isInstanceOf<ParseException>()));
+          throwsA(const TypeMatcher<ParseException>()));
     });
 
     test('should match paths using simple variables', () {

@@ -4,7 +4,7 @@ author: Dart Authors <misc@dartlang.org>
 description: Utilities for building and parsing URIs
 homepage: https://github.com/google/uri.dart
 environment:
-  sdk: '>=2.0.0-dev.18 <3.0.0'
+  sdk: '2.0.0-dev.68'
 dependencies:
   matcher: '>=0.12.0 <0.13.0'
   quiver: '>=2.0.0 <3.0.0'

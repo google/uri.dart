@@ -1,3 +1,6 @@
+## 0.11.3+1
+* Updated project requirement to match flutter 2.0.0+
+
 ## 0.11.3
 * Change upper bound to 3.0.0.
 * Fix runtime type errors in tests.

@@ -67,7 +67,7 @@ Modifiers control
 
 ## UriParser
 
-UriParser parses URIs according to a UriTemplate, extracting paramaters based on the variables defined in the template.
+UriParser parses URIs according to a UriTemplate, extracting parameters based on the variables defined in the template.
 
 Since URI Templates are not designed to be parsable, only a restricted subset of templates can be used for parsing.
 

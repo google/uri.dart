@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/google/uri.dart.svg?branch=master)](https://travis-ci.org/google/uri.dart)
+[![ci](https://github.com/google/uri.dart/workflows/ci/badge.svg?branch=master)](https://github.com/google/uri.dart/actions?query=branch%3Amaster)
 
 Utilities for working with [URI][uri]s in Dart, mostly parsing and generating URIs.
 

@@ -1,3 +1,7 @@
+## 1.0.0-nullsafety.0
+
+- Enable null safety for this package.
+
 ## 0.11.4
 
 - Now requires dart 2.10.0 or greater.

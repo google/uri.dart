@@ -46,10 +46,10 @@ class TestUriPattern extends UriPattern {
   final int hashCode;
   TestUriPattern(this.hashCode);
   @override
-  UriMatch match(Uri uri) => null;
+  UriMatch? match(Uri uri) => null;
   // ignore: hash_and_equals
   @override
   bool operator ==(o) => hashCode == o.hashCode;
   @override
-  Uri expand(variables) => null;
+  Uri expand(variables) => throw UnimplementedError();
 }

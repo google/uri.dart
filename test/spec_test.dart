@@ -55,9 +55,10 @@ void runSpecTests(String testname, {solo}) {
 
 void main() {
   if (!File('test/uritemplate-test/spec-examples.json').existsSync()) {
-    print('spec examples not found. Make sure you run tests from the project'
-        ' directory, or try running `git submodule update`.');
-    exit(1);
+    throw StateError(
+      'spec examples not found. Make sure you run tests from the project'
+      ' directory, or try running `git submodule update`.',
+    );
   }
 
   runSpecTests('spec-examples');

@@ -1,6 +1,8 @@
 name: uri
 version: 0.11.4
-description: Utilities for building and parsing URIs
+description: >-
+  Utilities for building and parsing URIs, including support for parsing
+  URI templates as defined in RFC 6570.
 homepage: https://github.com/google/uri.dart
 environment:
   sdk: '>=2.10.0 <3.0.0'

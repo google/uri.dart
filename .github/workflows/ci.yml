@@ -22,7 +22,7 @@ jobs:
       matrix:
         sdk: [dev, 2.10.0]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2.3.4
       - uses: dart-lang/setup-dart@v0.3
         with:
           sdk: ${{ matrix.sdk }}
@@ -45,7 +45,9 @@ jobs:
         os: [ubuntu-latest]
         sdk: [dev, 2.10.0]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2.3.4
+        with:
+          submodules: true
       - uses: dart-lang/setup-dart@v0.3
         with:
           sdk: ${{ matrix.sdk }}

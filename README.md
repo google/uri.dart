@@ -28,7 +28,7 @@ print(fredUri); // prints: http://example.com/~fred/
 
 URI templates are strings made up of fixed and variable parts. The variable parts are described with _expressions_, which are places within single curly-braces: `{` and `}`.
 
-Expressions consist of an optional _operator_ and a comma-separated list of _variable_specifications_. Variable specifications consist of a variable name and an optional _modifier_. The operator applies to the whole expression and controls how reserved characters are expanded, the prefix and separator, if any, applied to the expansion, and whether to expand the variable as a key/value pair. Modifiers apply to each variable in the expression and allow truncating the value, or "exploding" list and maps into multiple key/value pairs.
+Expressions consist of an optional _operator_ and a comma-separated list of _variable_ specifications_. Variable specifications consist of a variable name and an optional _modifier_. The operator applies to the whole expression and controls how reserved characters are expanded, the prefix and separator, if any, applied to the expansion, and whether to expand the variable as a key/value pair. Modifiers apply to each variable in the expression and allow truncating the value, or "exploding" list and maps into multiple key/value pairs.
 
 #### Examples
 
@@ -59,7 +59,7 @@ Modifiers control
 | Modifier | Description                                           |
 |----------|-------------------------------------------------------|
 | _none_   | Default expansion                                     |
-| :_n_     | Prefix: use only the first _n_ characters o the value |
+| :_n_     | Prefix: use only the first _n_ characters of the value|
 | *        | "Explode" the lists and maps into key/value pairs     |
 
 

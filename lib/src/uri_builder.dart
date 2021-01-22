@@ -11,8 +11,8 @@ class UriBuilder {
   String path;
   int port;
   Map<String, String> queryParameters;
-  String scheme;
-  String userInfo;
+  String? scheme;
+  String? userInfo;
 
   UriBuilder()
       : fragment = '',
@@ -35,9 +35,7 @@ class UriBuilder {
       host: _emptyToNull(host),
       path: _emptyToNull(path),
       port: port,
-      queryParameters: queryParameters == null || queryParameters.isEmpty
-          ? null
-          : queryParameters,
+      queryParameters: queryParameters.isEmpty ? null : queryParameters,
       scheme: scheme ?? '',
       userInfo: userInfo ?? '');
 
@@ -45,4 +43,4 @@ class UriBuilder {
   String toString() => build().toString();
 }
 
-String _emptyToNull(String s) => s == '' ? null : s;
+String? _emptyToNull(String s) => s == '' ? null : s;

@@ -20,7 +20,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        sdk: [dev, 2.10.0]
+        sdk: [dev]
     steps:
       - uses: actions/checkout@v2.3.4
       - uses: dart-lang/setup-dart@v0.3
@@ -43,7 +43,7 @@ jobs:
       matrix:
         # Add macos-latest and/or windows-latest if relevant for this package.
         os: [ubuntu-latest]
-        sdk: [dev, 2.10.0]
+        sdk: [dev]
     steps:
       - uses: actions/checkout@v2.3.4
         with:

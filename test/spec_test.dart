@@ -17,7 +17,7 @@ void runSpecTests(String testname, {solo}) {
   for (var specGroup in testJson.keys) {
     group(specGroup, () {
       var data = testJson[specGroup];
-      var variables = data['variables'] as Map<String, Object>;
+      var variables = data['variables'] as Map<String, dynamic>;
       var testCases = data['testcases'] as List;
 
       for (var testCase in testCases.cast<List>()) {

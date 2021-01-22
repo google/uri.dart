@@ -15,7 +15,7 @@ void main() {
     });
 
     test('should parse variables with non-alpha characters', () {
-      var unreserved = ['-', '.', '_', '~'];
+      final unreserved = ['-', '.', '_', '~'];
       for (var c in unreserved) {
         expectParse('/{a}', '/one${c}two', {'a': 'one${c}two'}, reverse: true);
         expectParse('/{+a}', '/one${c}two', {'a': 'one${c}two'}, reverse: true);
@@ -38,7 +38,7 @@ void main() {
       // ?, #, [,  and ] cannot appear in URI paths, so don't include them in
       // the reserved char set
       // there's a problem with ":" in SDK 1.3
-      var reservedChars = r"/@!$&'()*+,;=";
+      const reservedChars = r"/@!$&'()*+,;=";
       for (var c in reservedChars.split('')) {
         expectParse('{+a}', c, {'a': c}, reverse: true);
       }
@@ -214,11 +214,13 @@ void main() {
     });
 
     test(
-        'should match if query parameters not present when queryParamsAreOptional is true',
-        () {
-      expectMatch('/foo{?a}', '/foo', queryParamsAreOptional: true);
-      expectMatch('/foo{?a,b}', '/foo?a=x', queryParamsAreOptional: true);
-    });
+      'should match if query parameters not present when '
+      'queryParamsAreOptional is true',
+      () {
+        expectMatch('/foo{?a}', '/foo', queryParamsAreOptional: true);
+        expectMatch('/foo{?a,b}', '/foo?a=x', queryParamsAreOptional: true);
+      },
+    );
 
     test('should match a mix of query expressions and specified values', () {
       expectMatch('/foo?a=x{&b}', '/foo?a=x&b=y');
@@ -256,9 +258,9 @@ void expectParse(
   Map<String, Object> variables, {
   bool reverse = false,
 }) {
-  var uri = Uri.parse(uriString);
-  var uriTemplate = UriTemplate(template);
-  var parser = UriParser(uriTemplate);
+  final uri = Uri.parse(uriString);
+  final uriTemplate = UriTemplate(template);
+  final parser = UriParser(uriTemplate);
 
   expect(parser.parse(uri), equals(variables));
   expect(parser.matches(uri), true);
@@ -267,11 +269,18 @@ void expectParse(
   }
 }
 
-void expectParsePrefix(String template, String uriString, variables,
-    {restPath, restFragment, restQuery, bool matches = true}) {
-  var uri = Uri.parse(uriString);
-  var parser = UriParser(UriTemplate(template));
-  var match = parser.match(uri);
+void expectParsePrefix(
+  String template,
+  String uriString,
+  Object? variables, {
+  Object? restPath,
+  Object? restFragment,
+  Object? restQuery,
+  bool matches = true,
+}) {
+  final uri = Uri.parse(uriString);
+  final parser = UriParser(UriTemplate(template));
+  final match = parser.match(uri);
   expect(match == null, !matches);
   if (match != null) {
     if (restPath != null) expect(match.rest.path, restPath);
@@ -283,13 +292,13 @@ void expectParsePrefix(String template, String uriString, variables,
 
 void expectMatch(String template, String uriString,
     {bool queryParamsAreOptional = false}) {
-  var uri = Uri.parse(uriString);
-  var parser = UriParser(UriTemplate(template),
+  final uri = Uri.parse(uriString);
+  final parser = UriParser(UriTemplate(template),
       queryParamsAreOptional: queryParamsAreOptional);
   expect(parser.matches(uri), true, reason: '${parser.pathRegex}');
 }
 
 void expectNonMatch(String template, String uriString) {
-  var uri = Uri.parse(uriString);
+  final uri = Uri.parse(uriString);
   expect(UriParser(UriTemplate(template)).matches(uri), false);
 }

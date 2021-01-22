@@ -10,33 +10,32 @@ import 'dart:io';
 import 'package:test/test.dart';
 import 'package:uri/uri.dart';
 
-void runSpecTests(String testname, {solo}) {
-  var testFile = File('test/uritemplate-test/$testname.json');
-  var testJson = json.decode(testFile.readAsStringSync());
+void runSpecTests(String testname, {String? solo}) {
+  final testFile = File('test/uritemplate-test/$testname.json');
+  final testJson = json.decode(testFile.readAsStringSync());
 
   for (var specGroup in testJson.keys) {
     group(specGroup, () {
-      var data = testJson[specGroup];
-      var variables = data['variables'] as Map<String, Object?>;
-      var testCases = data['testcases'] as List;
+      final data = testJson[specGroup];
+      final variables = data['variables'] as Map<String, Object?>;
+      final testCases = data['testcases'] as List;
 
       for (var testCase in testCases.cast<List>()) {
-        var templateString = testCase[0] as String;
+        final templateString = testCase[0] as String;
         if (solo != null && templateString == solo) continue;
         test(templateString, () {
-          var expectation = testCase[1];
+          final expectation = testCase[1];
           if (expectation == false) {
             expect(
               () {
-                var template = UriTemplate(templateString);
-                template.expand(variables);
+                UriTemplate(templateString).expand(variables);
               },
               throwsA(isA<ParseException>()),
               reason: templateString,
             );
           } else {
-            var template = UriTemplate(templateString);
-            var r = template.expand(variables);
+            final template = UriTemplate(templateString);
+            final r = template.expand(variables);
             if (expectation is List) {
               expect(r, isIn(expectation), reason: templateString);
             } else {

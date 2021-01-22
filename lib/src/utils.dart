@@ -22,7 +22,7 @@ List<int> codePointToUtf8(int value) {
     encodedLength += 4;
   }
 
-  var encoded = List<int>.filled(encodedLength, 0);
+  final encoded = List<int>.filled(encodedLength, 0);
   var insertAt = 0;
   if (value < 0 || value > _unicodeValidRangeMax) {
     encoded.setRange(insertAt, insertAt + 3, [0xef, 0xbf, 0xbd]);

@@ -43,4 +43,4 @@ class UriBuilder {
   String toString() => build().toString();
 }
 
-String? _emptyToNull(String s) => s == '' ? null : s;
+String? _emptyToNull(String s) => s.isEmpty ? null : s;

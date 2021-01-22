@@ -78,14 +78,14 @@ String pctEncode(
 
   bool isPctTriplet(int ch, int i) {
     if (ch == _percent && (i + 2 < text.length)) {
-      var t1 = text.codeUnitAt(i + 1);
-      var t2 = text.codeUnitAt(i + 2);
+      final t1 = text.codeUnitAt(i + 1);
+      final t2 = text.codeUnitAt(i + 2);
       return isHex(t1) && isHex(t2);
     }
     return false;
   }
 
-  var result = StringBuffer();
+  final result = StringBuffer();
   for (var i = 0; i < text.length; i++) {
     var ch = text.codeUnitAt(i);
     if (allowPctTriplets && isPctTriplet(ch, i)) {
@@ -98,7 +98,7 @@ String pctEncode(
       if (ch >= 0xD800 && ch < 0xDC00) {
         // Low surrogate. We expect a next char high surrogate.
         ++i;
-        var nextCh = text.length == i ? 0 : text.codeUnitAt(i);
+        final nextCh = text.length == i ? 0 : text.codeUnitAt(i);
         if (nextCh >= 0xDC00 && nextCh < 0xE000) {
           // convert the pair to a U+10000 codepoint
           ch = 0x10000 + ((ch - 0xD800) << 10) + (nextCh - 0xDC00);

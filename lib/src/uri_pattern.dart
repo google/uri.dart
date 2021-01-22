@@ -43,12 +43,12 @@ class UriMatch {
       'parameters: $parameters rest: $rest)';
 
   @override
-  bool operator ==(o) =>
-      o is UriMatch &&
-      pattern == o.pattern &&
-      input == o.input &&
-      mapsEqual(parameters, o.parameters) &&
-      rest == o.rest;
+  bool operator ==(Object other) =>
+      other is UriMatch &&
+      pattern == other.pattern &&
+      input == other.input &&
+      mapsEqual(parameters, other.parameters) &&
+      rest == other.rest;
 
   @override
   int get hashCode => hash4(pattern, input, parameters.toString(), rest);

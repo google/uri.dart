@@ -20,13 +20,13 @@ void main() {
 
     test('should allow reserved chars', () {
       // general delimiters
-      expect(pctEncode(":/?#[]@", reservedTable), ":/?#[]@");
+      expect(pctEncode(':/?#[]@', reservedTable), ':/?#[]@');
       // sub delimiters
       expect(pctEncode(r"!$&'()*+,;=", reservedTable), r"!$&'()*+,;=");
     });
 
     test('should allow unreserved chars', () {
-      expect(pctEncode("-._~", reservedTable), "-._~");
+      expect(pctEncode('-._~', reservedTable), '-._~');
     });
   });
 
@@ -40,14 +40,14 @@ void main() {
 
     test('should encode reserved chars', () {
       // general delimiters
-      expect(pctEncode(":/?#[]@", unreservedTable), "%3A%2F%3F%23%5B%5D%40");
+      expect(pctEncode(':/?#[]@', unreservedTable), '%3A%2F%3F%23%5B%5D%40');
       // sub delimiters
       expect(pctEncode(r"!$&'()*+,;=", unreservedTable),
-          "%21%24%26%27%28%29%2A%2B%2C%3B%3D");
+          '%21%24%26%27%28%29%2A%2B%2C%3B%3D');
     });
 
     test('should allow unreserved chars', () {
-      expect(pctEncode("-._~", unreservedTable), "-._~");
+      expect(pctEncode('-._~', unreservedTable), '-._~');
     });
   });
 }

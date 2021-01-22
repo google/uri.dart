@@ -4,7 +4,7 @@
 
 library uri.encoding;
 
-import 'package:utf/utf.dart' show codepointsToUtf8;
+import 'utils.dart';
 
 const int _percent = 0x25;
 const int _zero = 0x30;
@@ -19,7 +19,7 @@ const int _lowerCaseF = 0x66;
 // be escaped or not.
 
 // The unreserved characters of RFC 3986.
-const unreservedTable = const [
+const unreservedTable = [
   //             LSB            MSB
   //              |              |
   0x0000, // 0x00 - 0x0f  0000000000000000
@@ -39,7 +39,7 @@ const unreservedTable = const [
 ]; // 0x70 - 0x7f  1111111111100010
 
 // Table of reserved characters
-const reservedTable = const [
+const reservedTable = [
   //             LSB            MSB
   //              |              |
   0x0000, // 0x00 - 0x0f  0000000000000000
@@ -58,27 +58,25 @@ const reservedTable = const [
   0x47ff
 ]; // 0x70 - 0x7f  1111111111100010
 
-/**
- * Copied from dart.core.Uri and modified to preserve pct-encoded triplets and
- * remove '+' encoding.
- *
- * This is the internal implementation of JavaScript's encodeURI function.
- * It encodes all characters in the string [text] except for those
- * that appear in [canonicalTable], and returns the escaped string.
- */
-String pctEncode(String text, List<int> canonicalTable,
-    {bool allowPctTriplets: false}) {
-  byteToHex(int v) {
-    final String hex = '0123456789ABCDEF';
-    return '%${hex[v >> 4]}${hex[v & 0x0f]}';
-  }
+/// Copied from dart.core.Uri and modified to preserve pct-encoded triplets and
+/// remove '+' encoding.
+///
+/// This is the internal implementation of JavaScript's encodeURI function.
+/// It encodes all characters in the string [text] except for those
+/// that appear in [canonicalTable], and returns the escaped string.
+String pctEncode(
+  String text,
+  List<int> canonicalTable, {
+  bool allowPctTriplets = false,
+}) {
+  String byteToHex(int v) => '%${_hex[v >> 4]}${_hex[v & 0x0f]}';
 
-  isHex(int ch) =>
+  bool isHex(int ch) =>
       (ch >= _zero && ch <= _nine) ||
       (ch >= _upperCaseA && ch <= _upperCaseF) ||
       (ch >= _lowerCaseA && ch <= _lowerCaseF);
 
-  isPctTriplet(int ch, int i) {
+  bool isPctTriplet(int ch, int i) {
     if (ch == _percent && (i + 2 < text.length)) {
       var t1 = text.codeUnitAt(i + 1);
       var t2 = text.codeUnitAt(i + 2);
@@ -87,9 +85,9 @@ String pctEncode(String text, List<int> canonicalTable,
     return false;
   }
 
-  var result = new StringBuffer();
-  for (int i = 0; i < text.length; i++) {
-    int ch = text.codeUnitAt(i);
+  var result = StringBuffer();
+  for (var i = 0; i < text.length; i++) {
+    var ch = text.codeUnitAt(i);
     if (allowPctTriplets && isPctTriplet(ch, i)) {
       result.write(text.substring(i, i + 3));
       i += 2;
@@ -100,18 +98,20 @@ String pctEncode(String text, List<int> canonicalTable,
       if (ch >= 0xD800 && ch < 0xDC00) {
         // Low surrogate. We expect a next char high surrogate.
         ++i;
-        int nextCh = text.length == i ? 0 : text.codeUnitAt(i);
+        var nextCh = text.length == i ? 0 : text.codeUnitAt(i);
         if (nextCh >= 0xDC00 && nextCh < 0xE000) {
           // convert the pair to a U+10000 codepoint
           ch = 0x10000 + ((ch - 0xD800) << 10) + (nextCh - 0xDC00);
         } else {
-          throw new ArgumentError('Malformed URI');
+          throw ArgumentError('Malformed URI');
         }
       }
-      for (int codepoint in codepointsToUtf8([ch])) {
+      for (var codepoint in codePointToUtf8(ch)) {
         result.write(byteToHex(codepoint));
       }
     }
   }
   return result.toString();
 }
+
+const _hex = '0123456789ABCDEF';

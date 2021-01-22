@@ -2,13 +2,13 @@
 
 Utilities for working with [URI][uri]s in Dart, mostly parsing and generating URIs.
 
-[uri]: https://api.dartlang.org/stable/1.24.3/dart-core/Uri-class.html
+[uri]: https://api.dart.dev/stable/dart-core/Uri-class.html
 
 ## UriPattern
 
 UriPattern is an interface for classes that match and parse URIs, much like the [Pattern][pattern] is for Strings. It defines the methods `bool matches(Uri uri)` and `UriMatch match(Uri uri)`.
 
-[pattern]: https://api.dartlang.org/docs/channels/stable/latest/dart_core/Pattern.html
+[pattern]: https://api.dart.dev/stable/dart-core/Pattern-class.html
 
 ## UriMatch
 
@@ -19,7 +19,7 @@ UriMatch is the result of `UriPattern.match()`. It contains the parameters parse
 UriTemplate is an implementation of [RFC 6570 URI Templates][rfc6570]. URI Templates are useful for generating URIs from data. UriTemplates are created from a template string, and then expanded with data to generate a URI:
 
 ```dart
-var template = new UriTemplate("http://example.com/~{user}/");
+var template = UriTemplate("http://example.com/~{user}/");
 String fredUri = template.expand({'user': 'fred'});
 print(fredUri); // prints: http://example.com/~fred/
 ```

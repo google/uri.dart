@@ -2,14 +2,13 @@ language: dart
 
 dart:
   - dev
+  - 2.10.0
 
 dart_task:
   - test: --platform vm
-  # No parallelism on Firefox (-j 1)
-  # Causes flakiness – need to investigate
-  - test: --platform firefox -j 1
-  - dartanalyzer
-  - dartfmt
+  - test: --platform chrome
+  - dartanalyzer: --fatal-infos .
+  - dartfmt:
 
 # Only building master means that we don't run two builds for each pull request.
 branches:

@@ -11,33 +11,40 @@ import 'package:test/test.dart';
 import 'package:uri/uri.dart';
 
 void runSpecTests(String testname, {solo}) {
-  var testFile = new File('test/uritemplate-test/$testname.json');
+  var testFile = File('test/uritemplate-test/$testname.json');
   var testJson = json.decode(testFile.readAsStringSync());
 
   for (var specGroup in testJson.keys) {
     group(specGroup, () {
       var data = testJson[specGroup];
-      var variables = data['variables'];
-      var testCases = data['testcases'];
+      var variables = data['variables'] as Map<String, Object>;
+      var testCases = data['testcases'] as List;
 
-      for (List testCase in testCases) {
-        String templateString = testCase[0];
+      for (var testCase in testCases.cast<List>()) {
+        var templateString = testCase[0] as String;
         if (solo != null && templateString == solo) continue;
         test(templateString, () {
           var expectation = testCase[1];
           if (expectation == false) {
-            expect(() {
-              var template = new UriTemplate(templateString);
-              template.expand(variables);
-            }, throwsArgumentError, reason: templateString);
+            expect(
+              () {
+                var template = UriTemplate(templateString);
+                template.expand(variables);
+              },
+              throwsA(isA<ParseException>()),
+              reason: templateString,
+            );
           } else {
-            var template = new UriTemplate(templateString);
+            var template = UriTemplate(templateString);
             var r = template.expand(variables);
             if (expectation is List) {
               expect(r, isIn(expectation), reason: templateString);
             } else {
-              expect(r, expectation,
-                  reason: "template: $templateString variables: $variables");
+              expect(
+                r,
+                expectation,
+                reason: 'template: $templateString variables: $variables',
+              );
             }
           }
         });
@@ -47,9 +54,9 @@ void runSpecTests(String testname, {solo}) {
 }
 
 void main() {
-  if (!new File('test/uritemplate-test/spec-examples.json').existsSync()) {
-    print("spec examples not found. Make sure you run tests from the project"
-        " directory, or try running `git submodule update`.");
+  if (!File('test/uritemplate-test/spec-examples.json').existsSync()) {
+    print('spec examples not found. Make sure you run tests from the project'
+        ' directory, or try running `git submodule update`.');
     exit(1);
   }
 

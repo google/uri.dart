@@ -4,9 +4,7 @@
 
 library uri.builder;
 
-/**
- * A mutable holder for incrementally building [Uri]s.
- */
+/// A mutable holder for incrementally building [Uri]s.
 class UriBuilder {
   String fragment;
   String host;
@@ -28,11 +26,11 @@ class UriBuilder {
         host = uri.host,
         path = uri.path,
         port = uri.port,
-        queryParameters = new Map<String, String>.from(uri.queryParameters),
+        queryParameters = Map<String, String>.from(uri.queryParameters),
         scheme = uri.scheme,
         userInfo = uri.userInfo;
 
-  Uri build() => new Uri(
+  Uri build() => Uri(
       fragment: _emptyToNull(fragment),
       host: _emptyToNull(host),
       path: _emptyToNull(path),
@@ -40,9 +38,10 @@ class UriBuilder {
       queryParameters: queryParameters == null || queryParameters.isEmpty
           ? null
           : queryParameters,
-      scheme: scheme ?? "",
-      userInfo: userInfo ?? "");
+      scheme: scheme ?? '',
+      userInfo: userInfo ?? '');
 
+  @override
   String toString() => build().toString();
 }
 

@@ -196,7 +196,7 @@ void main() {
     });
 
     test('should throw on out-of-order URI parts', () {
-      expect(() => new UriParser(new UriTemplate('/foo#c?a=x&b=y')),
+      expect(() => UriParser(UriTemplate('/foo#c?a=x&b=y')),
           throwsA(const TypeMatcher<ParseException>()));
     });
 
@@ -250,11 +250,15 @@ void main() {
   });
 }
 
-void expectParse(String template, String uriString, variables,
-    {reverse: false}) {
+void expectParse(
+  String template,
+  String uriString,
+  Map<String, Object> variables, {
+  bool reverse = false,
+}) {
   var uri = Uri.parse(uriString);
-  var uriTemplate = new UriTemplate(template);
-  var parser = new UriParser(uriTemplate);
+  var uriTemplate = UriTemplate(template);
+  var parser = UriParser(uriTemplate);
 
   expect(parser.parse(uri), equals(variables));
   expect(parser.matches(uri), true);
@@ -264,9 +268,9 @@ void expectParse(String template, String uriString, variables,
 }
 
 void expectParsePrefix(String template, String uriString, variables,
-    {restPath, restFragment, restQuery, matches: true}) {
+    {restPath, restFragment, restQuery, bool matches = true}) {
   var uri = Uri.parse(uriString);
-  var parser = new UriParser(new UriTemplate(template));
+  var parser = UriParser(UriTemplate(template));
   var match = parser.match(uri);
   expect(match == null, !matches);
   if (match != null) {
@@ -278,14 +282,14 @@ void expectParsePrefix(String template, String uriString, variables,
 }
 
 void expectMatch(String template, String uriString,
-    {bool queryParamsAreOptional: false}) {
+    {bool queryParamsAreOptional = false}) {
   var uri = Uri.parse(uriString);
-  var parser = new UriParser(new UriTemplate(template),
+  var parser = UriParser(UriTemplate(template),
       queryParamsAreOptional: queryParamsAreOptional);
   expect(parser.matches(uri), true, reason: '${parser.pathRegex}');
 }
 
 void expectNonMatch(String template, String uriString) {
   var uri = Uri.parse(uriString);
-  expect(new UriParser(new UriTemplate(template)).matches(uri), false);
+  expect(UriParser(UriTemplate(template)).matches(uri), false);
 }

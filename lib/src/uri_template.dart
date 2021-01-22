@@ -6,45 +6,42 @@ library uri.template;
 
 import 'dart:collection' show UnmodifiableListView;
 
-import 'package:quiver/core.dart' show firstNonNull;
 import 'package:quiver/pattern.dart' show escapeRegex;
 
 import 'encoding.dart';
 import 'uri_builder.dart';
 import 'uri_pattern.dart';
 
-final _exprRegex = new RegExp(r'{('
+final _exprRegex = RegExp(r'{('
     r'([+#./;?&]?)' // optional operator
     r'((?:\w|[%.])+(?:(?::\d+)|\*)?' // first varspec
     r'(?:,(?:\w|[%.])+(?:(?::\d+)|\*)?)*)' // rest varspecs
     r')}');
-final _literalVerifier = new RegExp(r'[{}]');
-final _varspecRegex = new RegExp(r'^((?:\w|[%.])+)((?::\d+)|(?:\*))?$');
-final _fragmentOrQueryRegex = new RegExp(r'([#?])');
+final _literalVerifier = RegExp(r'[{}]');
+final _varspecRegex = RegExp(r'^((?:\w|[%.])+)((?::\d+)|(?:\*))?$');
+final _fragmentOrQueryRegex = RegExp(r'([#?])');
 
-/**
- * Parsable templates have the following restrictions over expandable
- * templates:
- *
- *  * URI components must come in order: scheme, host, path, query, fragment,
- *    and there can only be one of each.
- *  * Path expressions can only contain one variable, and multiple expressions
- *    must be separated by a literal
- *  * Only the following operators are supported: default, +, #, ?, &
- *  * default and + operators are not allowed in query or fragment components
- *  * Queries can only use the ? or & operator. The ? operator can only be used
- *    once.
- *  * Fragments can only use the # operator
- *
- *  By default, fragments are treated as patchs and prefix-matched. This means
- *  that the template '#foo' will match against the fragments `#foo`, and
- *  `#foo/bar`, but not `#foobar`. This is to facilitate hierarchical matching
- *  in client-side routing applications, a likely use case, since fragments are
- *  not usually available to servers. You can turn off fragment prefix-matching
- *  with the `fragmentPrefixMatching` construtor parameter.
- */
+/// Parsable templates have the following restrictions over expandable
+/// templates:
+///
+///  * URI components must come in order: scheme, host, path, query, fragment,
+///    and there can only be one of each.
+///  * Path expressions can only contain one variable, and multiple expressions
+///    must be separated by a literal
+///  * Only the following operators are supported: default, +, #, ?, &
+///  * default and + operators are not allowed in query or fragment components
+///  * Queries can only use the ? or & operator. The ? operator can only be used
+///    once.
+///  * Fragments can only use the # operator
+///
+///  By default, fragments are treated as patchs and prefix-matched. This means
+///  that the template '#foo' will match against the fragments `#foo`, and
+///  `#foo/bar`, but not `#foobar`. This is to facilitate hierarchical matching
+///  in client-side routing applications, a likely use case, since fragments are
+///  not usually available to servers. You can turn off fragment prefix-matching
+///  with the `fragmentPrefixMatching` construtor parameter.
 class UriParser extends UriPattern {
-  static final _pathSeparators = new RegExp('[./]');
+  static final _pathSeparators = RegExp('[./]');
 
   final UriTemplate template;
   final bool _fragmentPrefixMatching;
@@ -58,14 +55,15 @@ class UriParser extends UriPattern {
 
   // TODO(justinfagnani): remove
   RegExp get fragmentRegex => _fragmentRegex;
+
   RegExp get pathRegex => _pathRegex;
 
   UriParser(this.template,
-      {bool fragmentPrefixMatching: true, bool queryParamsAreOptional: false})
-      : _fragmentPrefixMatching = firstNonNull(fragmentPrefixMatching, true),
-        _queryParamsAreOptional = firstNonNull(queryParamsAreOptional, false) {
-    if (template == null) throw new ArgumentError("null template A");
-    var compiler = new _Compiler(template);
+      {bool fragmentPrefixMatching = true, bool queryParamsAreOptional = false})
+      : _fragmentPrefixMatching = fragmentPrefixMatching ?? true,
+        _queryParamsAreOptional = queryParamsAreOptional ?? false {
+    if (template == null) throw ArgumentError('null template A');
+    var compiler = _Compiler(template);
     _pathRegex = compiler.pathRegex;
     _pathVariables = compiler.pathVariables;
     _queryVariables = compiler.queryVariables;
@@ -73,12 +71,11 @@ class UriParser extends UriPattern {
     _fragmentVariables = compiler.fragmentVariables;
   }
 
+  @override
   String toString() => '$template';
 
-  /**
-   * Parses [uri] returning the parameter values in a map keyed by the
-   * variable names in the template.
-   */
+  /// Parses [uri] returning the parameter values in a map keyed by the
+  /// variable names in the template.
   Map<String, String> parse(Uri uri) {
     var parameters = <String, String>{};
 
@@ -86,9 +83,9 @@ class UriParser extends UriPattern {
       var match = _pathRegex.firstMatch(uri.path);
 
       if (match == null) {
-        throw new ParseException('$template does not match $uri');
+        throw ParseException('$template does not match $uri');
       }
-      int i = 1;
+      var i = 1;
       for (var param in _pathVariables) {
         parameters[param] = match.group(i++);
       }
@@ -105,9 +102,9 @@ class UriParser extends UriPattern {
     if (_fragmentRegex != null) {
       var match = _fragmentRegex.firstMatch(uri.fragment);
       if (match == null) {
-        throw new ParseException('$template does not match $uri');
+        throw ParseException('$template does not match $uri');
       }
-      int i = 1;
+      var i = 1;
       for (var param in _fragmentVariables) {
         parameters[param] = match.group(i++);
       }
@@ -115,16 +112,17 @@ class UriParser extends UriPattern {
     return parameters;
   }
 
+  @override
   UriMatch match(Uri uri) {
     var parameters = <String, String>{};
-    var restUriBuilder = new UriBuilder();
+    var restUriBuilder = UriBuilder();
 
     if (_pathRegex != null) {
       var match = _pathRegex.matchAsPrefix(uri.path);
       if (match == null) {
         return null;
       } else {
-        int i = 1;
+        var i = 1;
         for (var param in _pathVariables) {
           parameters[param] = match.group(i++);
         }
@@ -168,7 +166,7 @@ class UriParser extends UriPattern {
       if (match == null || (!prefixMatch && match.end != uri.fragment.length)) {
         return null;
       } else {
-        int i = 1;
+        var i = 1;
         for (var param in _fragmentVariables) {
           parameters[param] = match.group(i++);
         }
@@ -185,40 +183,40 @@ class UriParser extends UriPattern {
         }
       }
     }
-    return new UriMatch(this, uri, parameters, restUriBuilder.build());
+    return UriMatch(this, uri, parameters, restUriBuilder.build());
   }
 
+  @override
   Uri expand(Map<String, Object> parameters) =>
       Uri.parse(template.expand(parameters));
 }
 
 // TODO(justinfagnani): write real, non-spec, documentation.
-/**
- * An implementation of [RFC 6570][rfc6570] URI Templates.
- *
- * [rfc6570]: http://tools.ietf.org/html/rfc6570
- *
- * A URI Template is a string describing a range of URIs that can be created
- * through variable expansion.
- *
- * URI Templates provide a number of different ways that variables can be
- * expanded into parts of a URI, suitable for usage as multi-segment paths,
- * path segments, query strings, fragment identifiers and more.
- *
- * Examples:
- *
- *  * http://example.com/~{username}/
- *  * http://example.com/dictionary/{term:1}/{term}
- *  * http://example.com/search{?q,lang}
- *
- * See the RFC for more details.
- */
+/// An implementation of [RFC 6570][rfc6570] URI Templates.
+///
+/// [rfc6570]: http://tools.ietf.org/html/rfc6570
+///
+/// A URI Template is a string describing a range of URIs that can be created
+/// through variable expansion.
+///
+/// URI Templates provide a number of different ways that variables can be
+/// expanded into parts of a URI, suitable for usage as multi-segment paths,
+/// path segments, query strings, fragment identifiers and more.
+///
+/// Examples:
+///
+///  * http://example.com/~{username}/
+///  * http://example.com/dictionary/{term:1}/{term}
+///  * http://example.com/search{?q,lang}
+///
+/// See the RFC for more details.
 class UriTemplate {
   final String template;
   final List _parts;
 
   UriTemplate(this.template) : _parts = _compile(template);
 
+  @override
   String toString() => template;
 
   static UnmodifiableListView _compile(String template) {
@@ -231,41 +229,43 @@ class UriTemplate {
       },
       onNonMatch: (String nonMatch) {
         if (_literalVerifier.hasMatch(nonMatch)) {
-          throw new ParseException(nonMatch);
+          throw ParseException(nonMatch);
         }
         if (nonMatch.isNotEmpty) parts.add(nonMatch);
+        return '';
       },
     );
-    return new UnmodifiableListView(parts);
+    return UnmodifiableListView(parts);
   }
 
-  /**
-   *  Expands the template into a URI according to the rules specified in RFC
-   *  6570. Throws a [ParseException] if the template is invalid.
-   */
+  ///  Expands the template into a URI according to the rules specified in RFC
+  ///  6570. Throws a [ParseException] if the template is invalid.
   String expand(Map<String, Object> variables) {
-    StringBuffer sb = new StringBuffer();
+    var sb = StringBuffer();
     for (var part in _parts) {
       if (part is Match) {
-        Match match = part;
+        var match = part;
         var expr = match.group(3);
         var op = match.group(2);
-        var separator =
-            ['', '+', '#'].contains(op) ? ',' : (op == '?') ? '&' : op;
-        bool formStyle = [';', '?', '&'].contains(op);
-        bool allowReserved = ['+', '#'].contains(op);
+        var separator = ['', '+', '#'].contains(op)
+            ? ','
+            : (op == '?')
+                ? '&'
+                : op;
+        var formStyle = [';', '?', '&'].contains(op);
+        var allowReserved = ['+', '#'].contains(op);
 
         var result = expr
             .split(',')
             .map((String varspec) {
               var varname = varspec;
-              int prefixLength = 0;
-              int prefixModIndex = varspec.lastIndexOf(':');
+              var prefixLength = 0;
+              var prefixModIndex = varspec.lastIndexOf(':');
               if (prefixModIndex != -1) {
                 varname = varspec.substring(0, prefixModIndex);
                 prefixLength = int.parse(varspec.substring(prefixModIndex + 1));
               }
-              bool explode = varspec[varspec.length - 1] == '*';
+              var explode = varspec[varspec.length - 1] == '*';
               if (explode) {
                 varname = varspec.substring(0, varspec.length - 1);
               }
@@ -274,7 +274,7 @@ class UriTemplate {
               var value = variables[varname];
               String str;
               if (value is Iterable) {
-                if (prefixLength != 0) throw new ParseException(expr);
+                if (prefixLength != 0) throw ParseException(expr);
                 if (value.isNotEmpty) {
                   if (explode && formStyle) {
                     itemSeparator = '$itemSeparator$varname=';
@@ -284,8 +284,8 @@ class UriTemplate {
                       .join(itemSeparator);
                   if (formStyle) str = '$varname=$str';
                 }
-              } else if (value is Map) {
-                if (prefixLength != 0) throw new ParseException(expr);
+              } else if (value is Map<String, dynamic>) {
+                if (prefixLength != 0) throw ParseException(expr);
                 if (value.isNotEmpty) {
                   var kvSeparator = explode ? '=' : ',';
                   str = value.keys
@@ -317,14 +317,16 @@ class UriTemplate {
           sb.writeAll(result, separator);
         }
       } else {
-        sb.write(_encode(part, true));
+        sb.write(_encode(part as String, true));
       }
     }
     return sb.toString();
   }
 
+  @override
   bool operator ==(o) => o is UriTemplate && o.template == template;
 
+  @override
   int get hashCode => template.hashCode;
 }
 
@@ -360,14 +362,14 @@ class _Compiler {
     _compilePath();
   }
 
-  _compilePath() {
-    StringBuffer pathBuffer = new StringBuffer();
+  void _compilePath() {
+    var pathBuffer = StringBuffer();
 
     while (_parts.moveNext()) {
       var part = _parts.current;
       if (part is String) {
         var subparts = _splitLiteral(part);
-        for (int i = 0; i < subparts.length; i++) {
+        for (var i = 0; i < subparts.length; i++) {
           var subpart = subparts[i];
           if (subpart is String) {
             pathBuffer.write('(?:${escapeRegex(subpart)})');
@@ -380,7 +382,7 @@ class _Compiler {
           }
         }
       } else {
-        Match match = part;
+        var match = part as Match;
         var expr = match.group(3);
         var op = match.group(2);
         if (op == '') {
@@ -405,12 +407,12 @@ class _Compiler {
       }
     }
     if (pathBuffer.isNotEmpty) {
-      pathRegex = new RegExp(pathBuffer.toString());
+      pathRegex = RegExp(pathBuffer.toString());
     }
   }
 
   void _compileQuery({Match match, List prevParts}) {
-    handleExpressionMatch(Match match) {
+    void handleExpressionMatch(Match match) {
       var expr = match.group(3);
       for (var q in expr.split(',')) {
         // TODO: handle modifiers
@@ -419,15 +421,15 @@ class _Compiler {
       }
     }
 
-    handleLiteralParts(List literalParts) {
-      for (int i = 0; i < literalParts.length; i++) {
+    void handleLiteralParts(List literalParts) {
+      for (var i = 0; i < literalParts.length; i++) {
         var subpart = literalParts[i];
         if (subpart is String) {
           queryVariables.addAll(_parseMap(subpart, '&'));
         } else if ((subpart as Match).group(1) == '?') {
-          throw new ParseException('multiple queries');
+          throw ParseException('multiple queries');
         } else if ((subpart as Match).group(1) == '#') {
-          return _compileFragment(prevParts: literalParts.sublist(i + 1));
+          _compileFragment(prevParts: literalParts.sublist(i + 1));
         }
       }
     }
@@ -443,28 +445,28 @@ class _Compiler {
       if (part is String) {
         handleLiteralParts(_splitLiteral(part));
       } else {
-        Match match = part;
+        var match = part as Match;
         var op = match.group(2);
         if (op == '&') {
           // add a query variable
           handleExpressionMatch(match);
         } else if (op == '?') {
-          throw new ParseException('multiple queries');
+          throw ParseException('multiple queries');
         } else if (op == '#') {
           _compileFragment(match: match);
           return;
         } else {
           // TODO: add a query variable if the expr is in a value position?
-          throw new ParseException('invalid operator for query part');
+          throw ParseException('invalid operator for query part');
         }
       }
     }
   }
 
   void _compileFragment({Match match, List prevParts}) {
-    var fragmentBuffer = new StringBuffer();
+    var fragmentBuffer = StringBuffer();
 
-    handleExpressionMatch(Match match) {
+    void handleExpressionMatch(Match match) {
       var expr = match.group(3);
       fragmentBuffer.write(expr.split(',').map((varspec) {
         // store the variable name
@@ -478,14 +480,14 @@ class _Compiler {
     }
 
     if (prevParts != null) {
-      for (int i = 0; i < prevParts.length; i++) {
+      for (var i = 0; i < prevParts.length; i++) {
         var subpart = prevParts[i];
         if (subpart is String) {
           fragmentBuffer.write('(?:${escapeRegex(subpart)})');
         } else if ((subpart as Match).group(1) == '?') {
-          throw new ParseException('?');
+          throw ParseException('?');
         } else if ((subpart as Match).group(1) == '#') {
-          throw new ParseException('#');
+          throw ParseException('#');
         }
       }
     }
@@ -494,18 +496,18 @@ class _Compiler {
       if (part is String) {
         fragmentBuffer.write('(?:${escapeRegex(part)})');
       } else {
-        Match match = part;
+        var match = part as Match;
         var op = match.group(2);
         if (op == '#') {
           handleExpressionMatch(match);
         } else {
           // TODO: add a query variable if the expr is in a value position?
-          throw new ParseException('invalid operator for fragment part');
+          throw ParseException('invalid operator for fragment part');
         }
       }
     }
     if (fragmentBuffer.isNotEmpty) {
-      fragmentRegex = new RegExp(fragmentBuffer.toString());
+      fragmentRegex = RegExp(fragmentBuffer.toString());
     }
   }
 }
@@ -513,8 +515,8 @@ class _Compiler {
 Map<String, String> _parseMap(String s, String separator) {
   var map = <String, String>{};
   var kvPairs = s.split(separator);
-  for (int i = 0; i < kvPairs.length; i++) {
-    String kvPair = kvPairs[i];
+  for (var i = 0; i < kvPairs.length; i++) {
+    var kvPair = kvPairs[i];
     var eqIndex = kvPair.indexOf('=');
     if (eqIndex > -1) {
       var key = kvPair.substring(0, eqIndex);
@@ -557,6 +559,9 @@ String _encode(String s, [bool allowReserved = false]) {
 
 class ParseException implements Exception {
   final String message;
+
   ParseException(this.message);
-  String toString() => "ParseException: $message";
+
+  @override
+  String toString() => 'ParseException: $message';
 }

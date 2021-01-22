@@ -7,20 +7,20 @@ library uri.uri_template_test;
 import 'package:test/test.dart';
 import 'package:uri/uri.dart';
 
-main() {
+void main() {
   group('UriTemplate', () {
     test('should have a working equals method', () {
-      var a1 = new UriTemplate('a');
-      var a2 = new UriTemplate('a');
-      var b1 = new UriTemplate('b');
+      var a1 = UriTemplate('a');
+      var a2 = UriTemplate('a');
+      var b1 = UriTemplate('b');
       expect(a1, equals(a2));
       expect(a2, equals(a1));
       expect(a1, isNot(b1));
     });
 
     test('should have a working hashCode', () {
-      var a = new UriTemplate('a');
-      var b = new UriTemplate('b');
+      var a = UriTemplate('a');
+      var b = UriTemplate('b');
       expect(a.hashCode, isPositive);
       // here we assume that the hashCode is reasonable and changes
       // for a single character.

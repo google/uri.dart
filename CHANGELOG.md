@@ -1,3 +1,9 @@
+## 0.11.4
+
+- Now requires dart 2.10.0 or greater.
+- Requires the latest versions of `pkg:matcher` and `pkg:quiver`.
+- Dropped dependency on `pkg:utf`.
+
 ## 0.11.3+1
 * Updated project requirement to match flutter 2.0.0+
 

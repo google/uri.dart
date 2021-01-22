@@ -10,31 +10,31 @@ import 'package:uri/uri.dart';
 void main() {
   group('UriMatch', () {
     test('should implement equals and hashCode', () {
-      var match1 = new UriMatch(new TestUriPattern(123), Uri.parse('abc'),
-          {'a': 'b'}, Uri.parse('bc'));
+      var match1 = UriMatch(
+          TestUriPattern(123), Uri.parse('abc'), {'a': 'b'}, Uri.parse('bc'));
 
-      var match2 = new UriMatch(new TestUriPattern(123), Uri.parse('abc'),
-          {'a': 'b'}, Uri.parse('bc'));
+      var match2 = UriMatch(
+          TestUriPattern(123), Uri.parse('abc'), {'a': 'b'}, Uri.parse('bc'));
       expect(match1.hashCode, match2.hashCode);
       expect(match1, match2);
 
-      var match3 = new UriMatch(new TestUriPattern(456), Uri.parse('abc'),
-          {'a': 'b'}, Uri.parse('bc'));
+      var match3 = UriMatch(
+          TestUriPattern(456), Uri.parse('abc'), {'a': 'b'}, Uri.parse('bc'));
       expect(match1.hashCode, isNot(match3.hashCode));
       expect(match1, isNot(match3));
 
-      var match4 = new UriMatch(new TestUriPattern(123), Uri.parse('abd'),
-          {'a': 'b'}, Uri.parse('bc'));
+      var match4 = UriMatch(
+          TestUriPattern(123), Uri.parse('abd'), {'a': 'b'}, Uri.parse('bc'));
       expect(match1.hashCode, isNot(match4.hashCode));
       expect(match1, isNot(match4));
 
-      var match5 = new UriMatch(new TestUriPattern(123), Uri.parse('abc'),
-          {'c': 'b'}, Uri.parse('bc'));
+      var match5 = UriMatch(
+          TestUriPattern(123), Uri.parse('abc'), {'c': 'b'}, Uri.parse('bc'));
       expect(match1.hashCode, isNot(match5.hashCode));
       expect(match1, isNot(match5));
 
-      var match6 = new UriMatch(new TestUriPattern(123), Uri.parse('abc'),
-          {'a': 'b'}, Uri.parse('bd'));
+      var match6 = UriMatch(
+          TestUriPattern(123), Uri.parse('abc'), {'a': 'b'}, Uri.parse('bd'));
       expect(match1.hashCode, isNot(match6.hashCode));
       expect(match1, isNot(match6));
     });
@@ -42,10 +42,14 @@ void main() {
 }
 
 class TestUriPattern extends UriPattern {
+  @override
   final int hashCode;
   TestUriPattern(this.hashCode);
+  @override
   UriMatch match(Uri uri) => null;
   // ignore: hash_and_equals
+  @override
   bool operator ==(o) => hashCode == o.hashCode;
+  @override
   Uri expand(variables) => null;
 }

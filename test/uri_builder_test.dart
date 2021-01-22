@@ -10,7 +10,7 @@ import 'package:uri/uri.dart';
 void main() {
   group('UriBuilder', () {
     test('should build a Uri', () {
-      var builder = new UriBuilder()
+      var builder = UriBuilder()
         ..fragment = 'fragment'
         ..host = 'host'
         ..path = 'path'
@@ -24,18 +24,18 @@ void main() {
 
     test('should build a Uri from a Uri', () {
       var uri = Uri.parse('http://example.com:8080/path?a=b#fragment');
-      var builder = new UriBuilder.fromUri(uri);
+      var builder = UriBuilder.fromUri(uri);
       expect(builder.build().toString(), uri.toString());
     });
 
     test("should preserve paths when there's no host", () {
-      var uri = (new UriBuilder()..path = 'path').build();
+      var uri = (UriBuilder()..path = 'path').build();
       expect(uri.path, 'path');
     });
 
     // regression test for https://github.com/google/uri.dart/issues/16
     test("shouldn't add extra junk with empty parts", () {
-      var uri = (new UriBuilder()..path = 'path').build();
+      var uri = (UriBuilder()..path = 'path').build();
       expect(uri.toString(), 'path');
     });
   });

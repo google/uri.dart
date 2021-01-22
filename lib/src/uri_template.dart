@@ -240,7 +240,7 @@ class UriTemplate {
 
   ///  Expands the template into a URI according to the rules specified in RFC
   ///  6570. Throws a [ParseException] if the template is invalid.
-  String expand(Map<String, dynamic> variables) {
+  String expand(Map<String, Object?> variables) {
     var sb = StringBuffer();
     for (var part in _parts) {
       if (part is Match) {
@@ -284,7 +284,7 @@ class UriTemplate {
                       .join(itemSeparator);
                   if (formStyle) str = '$varname=$str';
                 }
-              } else if (value is Map<String, dynamic>) {
+              } else if (value is Map<String, Object?>) {
                 if (prefixLength != 0) throw ParseException(expr);
                 if (value.isNotEmpty) {
                   var kvSeparator = explode ? '=' : ',';

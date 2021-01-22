@@ -9,14 +9,15 @@ import 'package:matcher/matcher.dart' show Matcher, anything, isA;
 /// Matches the individual parts of a [Uri]. If a matcher is not specified for a
 /// part, the default matcher is [anything]. This allows you to just match on a
 /// single part, like the scheme, while ignoring the rest.
-Matcher matchesUri(
-        {fragment = anything,
-        host = anything,
-        path = anything,
-        port = anything,
-        queryParameters = anything,
-        scheme = anything,
-        userInfo = anything}) =>
+Matcher matchesUri({
+  Object? fragment = anything,
+  Object? host = anything,
+  Object? path = anything,
+  Object? port = anything,
+  Object? queryParameters = anything,
+  Object? scheme = anything,
+  Object? userInfo = anything,
+}) =>
     isA<Uri>()
         .having((e) => e.fragment, 'fragment', fragment)
         .having((e) => e.host, 'host', host)

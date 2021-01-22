@@ -63,7 +63,7 @@ class UriParser extends UriPattern {
     bool queryParamsAreOptional = false,
   })  : _fragmentPrefixMatching = fragmentPrefixMatching,
         _queryParamsAreOptional = queryParamsAreOptional {
-    var compiler = _Compiler(template);
+    final compiler = _Compiler(template);
     _pathRegex = compiler.pathRegex;
     _pathVariables = compiler.pathVariables;
     _queryVariables = compiler.queryVariables;
@@ -77,10 +77,10 @@ class UriParser extends UriPattern {
   /// Parses [uri] returning the parameter values in a map keyed by the
   /// variable names in the template.
   Map<String, String> parse(Uri uri) {
-    var parameters = <String, String>{};
+    final parameters = <String, String>{};
 
     if (_pathVariables.isNotEmpty) {
-      var match = _pathRegex!.firstMatch(uri.path);
+      final match = _pathRegex!.firstMatch(uri.path);
 
       if (match == null) {
         throw ParseException('$template does not match $uri');
@@ -100,7 +100,7 @@ class UriParser extends UriPattern {
     }
 
     if (_fragmentRegex != null) {
-      var match = _fragmentRegex!.firstMatch(uri.fragment);
+      final match = _fragmentRegex!.firstMatch(uri.fragment);
       if (match == null) {
         throw ParseException('$template does not match $uri');
       }
@@ -114,11 +114,11 @@ class UriParser extends UriPattern {
 
   @override
   UriMatch? match(Uri uri) {
-    var parameters = <String, String?>{};
-    var restUriBuilder = UriBuilder();
+    final parameters = <String, String?>{};
+    final restUriBuilder = UriBuilder();
 
     if (_pathRegex != null) {
-      var match = _pathRegex!.matchAsPrefix(uri.path);
+      final match = _pathRegex!.matchAsPrefix(uri.path);
       if (match == null) {
         return null;
       } else {
@@ -145,7 +145,7 @@ class UriParser extends UriPattern {
     if (_queryVariables.isNotEmpty) {
       // TODO(justinfagnani): remove matched parameters?
       for (var key in _queryVariables.keys) {
-        var value = _queryVariables[key];
+        final value = _queryVariables[key];
         if (value == null) {
           if (_queryParamsAreOptional || uri.queryParameters.containsKey(key)) {
             parameters[key] = uri.queryParameters[key];
@@ -160,8 +160,8 @@ class UriParser extends UriPattern {
 
     if (_fragmentRegex != null) {
       if (uri.fragment.isEmpty) return null;
-      var match = _fragmentRegex!.matchAsPrefix(uri.fragment);
-      var prefixMatch =
+      final match = _fragmentRegex!.matchAsPrefix(uri.fragment);
+      final prefixMatch =
           _fragmentPrefixMatching && _pathSeparators.hasMatch(uri.fragment);
       if (match == null || (!prefixMatch && match.end != uri.fragment.length)) {
         return null;
@@ -220,7 +220,7 @@ class UriTemplate {
   String toString() => template;
 
   static UnmodifiableListView _compile(String template) {
-    var parts = [];
+    final parts = [];
     template.splitMapJoin(
       _exprRegex,
       onMatch: (match) {
@@ -241,37 +241,37 @@ class UriTemplate {
   ///  Expands the template into a URI according to the rules specified in RFC
   ///  6570. Throws a [ParseException] if the template is invalid.
   String expand(Map<String, Object?> variables) {
-    var sb = StringBuffer();
+    final sb = StringBuffer();
     for (var part in _parts) {
       if (part is Match) {
-        var match = part;
-        var expr = match.group(3)!;
-        var op = match.group(2)!;
-        var separator = ['', '+', '#'].contains(op)
+        final match = part;
+        final expr = match.group(3)!;
+        final op = match.group(2)!;
+        final separator = ['', '+', '#'].contains(op)
             ? ','
             : (op == '?')
                 ? '&'
                 : op;
-        var formStyle = [';', '?', '&'].contains(op);
-        var allowReserved = ['+', '#'].contains(op);
+        final formStyle = [';', '?', '&'].contains(op);
+        final allowReserved = ['+', '#'].contains(op);
 
-        var result = expr
+        final result = expr
             .split(',')
             .map((String varspec) {
               var varname = varspec;
               var prefixLength = 0;
-              var prefixModIndex = varspec.lastIndexOf(':');
+              final prefixModIndex = varspec.lastIndexOf(':');
               if (prefixModIndex != -1) {
                 varname = varspec.substring(0, prefixModIndex);
                 prefixLength = int.parse(varspec.substring(prefixModIndex + 1));
               }
-              var explode = varspec[varspec.length - 1] == '*';
+              final explode = varspec[varspec.length - 1] == '*';
               if (explode) {
                 varname = varspec.substring(0, varspec.length - 1);
               }
               var itemSeparator = explode ? separator : ',';
 
-              var value = variables[varname];
+              final value = variables[varname];
               String? str;
               if (value is Iterable) {
                 if (prefixLength != 0) throw ParseException(expr);
@@ -287,7 +287,7 @@ class UriTemplate {
               } else if (value is Map<String, Object?>) {
                 if (prefixLength != 0) throw ParseException(expr);
                 if (value.isNotEmpty) {
-                  var kvSeparator = explode ? '=' : ',';
+                  final kvSeparator = explode ? '=' : ',';
                   str = value.keys
                       .map((k) =>
                           _encode(k) +
@@ -324,7 +324,8 @@ class UriTemplate {
   }
 
   @override
-  bool operator ==(o) => o is UriTemplate && o.template == template;
+  bool operator ==(Object other) =>
+      other is UriTemplate && other.template == template;
 
   @override
   int get hashCode => template.hashCode;
@@ -363,28 +364,28 @@ class _Compiler {
   }
 
   void _compilePath() {
-    var pathBuffer = StringBuffer();
+    final pathBuffer = StringBuffer();
 
     while (_parts.moveNext()) {
-      var part = _parts.current;
+      final part = _parts.current;
       if (part is String) {
-        var subparts = _splitLiteral(part);
+        final subparts = _splitLiteral(part);
         for (var i = 0; i < subparts.length; i++) {
-          var subpart = subparts[i];
+          final subpart = subparts[i];
           if (subpart is String) {
             pathBuffer.write('(?:${escapeRegex(subpart)})');
           } else if ((subpart as Match).group(1) == '?') {
             _compileQuery(prevParts: subparts.sublist(i + 1));
             break;
-          } else if ((subpart).group(1) == '#') {
+          } else if (subpart.group(1) == '#') {
             _compileFragment(prevParts: subparts.sublist(i + 1));
             break;
           }
         }
       } else {
-        var match = part as Match;
-        var expr = match.group(3)!;
-        var op = match.group(2);
+        final match = part as Match;
+        final expr = match.group(3)!;
+        final op = match.group(2);
         if (op == '') {
           pathBuffer.write(expr.split(',').map((varspec) {
             // store the variable name
@@ -413,22 +414,22 @@ class _Compiler {
 
   void _compileQuery({Match? match, List? prevParts}) {
     void handleExpressionMatch(Match match) {
-      var expr = match.group(3)!;
+      final expr = match.group(3)!;
       for (var q in expr.split(',')) {
         // TODO: handle modifiers
-        var key = _varspecRegex.firstMatch(q)!.group(1)!;
+        final key = _varspecRegex.firstMatch(q)!.group(1)!;
         queryVariables[key] = null;
       }
     }
 
     void handleLiteralParts(List literalParts) {
       for (var i = 0; i < literalParts.length; i++) {
-        var subpart = literalParts[i];
+        final subpart = literalParts[i];
         if (subpart is String) {
           queryVariables.addAll(_parseMap(subpart, '&'));
         } else if ((subpart as Match).group(1) == '?') {
           throw ParseException('multiple queries');
-        } else if ((subpart).group(1) == '#') {
+        } else if (subpart.group(1) == '#') {
           _compileFragment(prevParts: literalParts.sublist(i + 1));
         }
       }
@@ -441,12 +442,12 @@ class _Compiler {
       handleLiteralParts(prevParts);
     }
     while (_parts.moveNext()) {
-      var part = _parts.current;
+      final part = _parts.current;
       if (part is String) {
         handleLiteralParts(_splitLiteral(part));
       } else {
-        var match = part as Match;
-        var op = match.group(2);
+        final match = part as Match;
+        final op = match.group(2);
         if (op == '&') {
           // add a query variable
           handleExpressionMatch(match);
@@ -464,10 +465,10 @@ class _Compiler {
   }
 
   void _compileFragment({Match? match, List? prevParts}) {
-    var fragmentBuffer = StringBuffer();
+    final fragmentBuffer = StringBuffer();
 
     void handleExpressionMatch(Match match) {
-      var expr = match.group(3)!;
+      final expr = match.group(3)!;
       fragmentBuffer.write(expr.split(',').map((varspec) {
         // store the variable name
         fragmentVariables.add(_varspecRegex.firstMatch(varspec)!.group(1)!);
@@ -481,23 +482,23 @@ class _Compiler {
 
     if (prevParts != null) {
       for (var i = 0; i < prevParts.length; i++) {
-        var subpart = prevParts[i];
+        final subpart = prevParts[i];
         if (subpart is String) {
           fragmentBuffer.write('(?:${escapeRegex(subpart)})');
         } else if ((subpart as Match).group(1) == '?') {
           throw ParseException('?');
-        } else if ((subpart).group(1) == '#') {
+        } else if (subpart.group(1) == '#') {
           throw ParseException('#');
         }
       }
     }
     while (_parts.moveNext()) {
-      var part = _parts.current;
+      final part = _parts.current;
       if (part is String) {
         fragmentBuffer.write('(?:${escapeRegex(part)})');
       } else {
-        var match = part as Match;
-        var op = match.group(2);
+        final match = part as Match;
+        final op = match.group(2);
         if (op == '#') {
           handleExpressionMatch(match);
         } else {
@@ -513,13 +514,13 @@ class _Compiler {
 }
 
 Map<String, String> _parseMap(String s, String separator) {
-  var map = <String, String>{};
-  var kvPairs = s.split(separator);
+  final map = <String, String>{};
+  final kvPairs = s.split(separator);
   for (var i = 0; i < kvPairs.length; i++) {
-    var kvPair = kvPairs[i];
-    var eqIndex = kvPair.indexOf('=');
+    final kvPair = kvPairs[i];
+    final eqIndex = kvPair.indexOf('=');
     if (eqIndex > -1) {
-      var key = kvPair.substring(0, eqIndex);
+      final key = kvPair.substring(0, eqIndex);
       var value = '';
       // handle key1=,,key2=x
       if (eqIndex == kvPair.length - 1) {
@@ -537,7 +538,7 @@ Map<String, String> _parseMap(String s, String separator) {
 }
 
 List _splitLiteral(String literal) {
-  var subparts = [];
+  final subparts = [];
   literal.splitMapJoin(
     _fragmentOrQueryRegex,
     onMatch: (m) {
@@ -553,7 +554,7 @@ List _splitLiteral(String literal) {
 }
 
 String _encode(String s, [bool allowReserved = false]) {
-  var table = allowReserved ? reservedTable : unreservedTable;
+  final table = allowReserved ? reservedTable : unreservedTable;
   return pctEncode(s, table, allowPctTriplets: allowReserved);
 }
 

@@ -57,6 +57,12 @@ class UriParser extends UriPattern {
 
   RegExp? get pathRegex => _pathRegex;
 
+  List<String> get pathVariables => List.unmodifiable(_pathVariables);
+
+  Map<String, String?> get queryVariables => Map.unmodifiable(_queryVariables);
+
+  List<String> get fragmentVariables => List.unmodifiable(_fragmentVariables);
+
   UriParser(
     this.template, {
     bool fragmentPrefixMatching = true,

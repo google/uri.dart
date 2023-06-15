@@ -1,5 +1,5 @@
 # Set update schedule for GitHub Actions
-# See https://docs.github.com/en/free-pro-team@latest/github/administering-a-repository/keeping-your-actions-up-to-date-with-dependabot
+# See https://docs.github.com/en/code-security/dependabot/working-with-dependabot/keeping-your-actions-up-to-date-with-dependabot
 
 version: 2
 updates:

@@ -10,17 +10,18 @@ import 'dart:io';
 import 'package:test/test.dart';
 import 'package:uri/uri.dart';
 
-void runSpecTests(String testname, {String? solo}) {
-  final testFile = File('test/uritemplate-test/$testname.json');
-  final testJson = json.decode(testFile.readAsStringSync());
+void runSpecTests(String testName, {String? solo}) {
+  final testFile = File('test/uritemplate-test/$testName.json');
+  final testJson =
+      json.decode(testFile.readAsStringSync()) as Map<String, Object?>;
 
   for (var specGroup in testJson.keys) {
     group(specGroup, () {
-      final data = testJson[specGroup];
+      final data = testJson[specGroup] as Map<String, Object?>;
       final variables = data['variables'] as Map<String, Object?>;
       final testCases = data['testcases'] as List;
 
-      for (var testCase in testCases.cast<List>()) {
+      for (var testCase in testCases.cast<List<Object?>>()) {
         final templateString = testCase[0] as String;
         if (solo != null && templateString == solo) continue;
         test(templateString, () {

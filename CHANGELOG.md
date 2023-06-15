@@ -1,3 +1,7 @@
+## 1.0.1-wip
+
+- Require Dart 2.17 or greater.
+
 ## 1.0.0
 
 - Enable null safety for this package.

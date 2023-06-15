@@ -2,8 +2,6 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-library uri.uri_pattern;
-
 import 'package:quiver/collection.dart' show mapsEqual;
 import 'package:quiver/core.dart' show hash4;
 

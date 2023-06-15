@@ -2,8 +2,6 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-library uri.template;
-
 import 'dart:collection' show UnmodifiableListView;
 
 import 'package:quiver/pattern.dart' show escapeRegex;
@@ -212,15 +210,15 @@ class UriParser extends UriPattern {
 /// See the RFC for more details.
 class UriTemplate {
   final String template;
-  final List _parts;
+  final List<Object> _parts;
 
   UriTemplate(this.template) : _parts = _compile(template);
 
   @override
   String toString() => template;
 
-  static UnmodifiableListView _compile(String template) {
-    final parts = [];
+  static UnmodifiableListView<Object> _compile(String template) {
+    final parts = <Object>[];
     template.splitMapJoin(
       _exprRegex,
       onMatch: (match) {
@@ -349,7 +347,7 @@ class UriTemplate {
  * over to the next _compileX method.
  */
 class _Compiler {
-  final Iterator _parts;
+  final Iterator<Object> _parts;
 
   RegExp? pathRegex;
   final List<String> pathVariables = [];
@@ -412,7 +410,7 @@ class _Compiler {
     }
   }
 
-  void _compileQuery({Match? match, List? prevParts}) {
+  void _compileQuery({Match? match, List<Object>? prevParts}) {
     void handleExpressionMatch(Match match) {
       final expr = match.group(3)!;
       for (var q in expr.split(',')) {
@@ -422,7 +420,7 @@ class _Compiler {
       }
     }
 
-    void handleLiteralParts(List literalParts) {
+    void handleLiteralParts(List<Object> literalParts) {
       for (var i = 0; i < literalParts.length; i++) {
         final subpart = literalParts[i];
         if (subpart is String) {
@@ -464,7 +462,7 @@ class _Compiler {
     }
   }
 
-  void _compileFragment({Match? match, List? prevParts}) {
+  void _compileFragment({Match? match, List<Object>? prevParts}) {
     final fragmentBuffer = StringBuffer();
 
     void handleExpressionMatch(Match match) {
@@ -537,8 +535,8 @@ Map<String, String> _parseMap(String s, String separator) {
   return map;
 }
 
-List _splitLiteral(String literal) {
-  final subparts = [];
+List<Object> _splitLiteral(String literal) {
+  final subparts = <Object>[];
   literal.splitMapJoin(
     _fragmentOrQueryRegex,
     onMatch: (m) {

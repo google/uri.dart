@@ -2,8 +2,6 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-library uri.matchers;
-
 import 'package:matcher/matcher.dart' show Matcher, anything, isA;
 
 /// Matches the individual parts of a [Uri]. If a matcher is not specified for a

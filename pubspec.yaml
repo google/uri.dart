@@ -1,5 +1,5 @@
 name: uri
-version: 1.0.1-wip
+version: 1.1.0-wip
 description: >-
   Utilities for building and parsing URIs, including support for parsing
   URI templates as defined in RFC 6570.
@@ -12,5 +12,5 @@ dependencies:
   quiver: ^3.0.0
 
 dev_dependencies:
-  lints: ^2.1.1
+  dart_flutter_team_lints: ^1.0.0
   test: ^1.16.0

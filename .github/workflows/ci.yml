@@ -22,7 +22,7 @@ jobs:
       matrix:
         sdk: [3.0.0, dev]
     steps:
-      - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
+      - uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b
       - uses: dart-lang/setup-dart@d6a63dab3335f427404425de0fbfed4686d93c4f
         with:
           sdk: ${{ matrix.sdk }}
@@ -44,7 +44,7 @@ jobs:
         os: [ubuntu-latest]
         sdk: [3.0.0, dev]
     steps:
-      - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
+      - uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b
         with:
           submodules: true
       - uses: dart-lang/setup-dart@d6a63dab3335f427404425de0fbfed4686d93c4f

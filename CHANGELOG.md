@@ -1,6 +1,6 @@
 ## 1.1.0-wip
 
-- Require Dart 3.0.0 or greater.
+- Require Dart 3.1.0 or greater.
 - No longer explicitly name the `matchers.dart` library as `uri.matchers`.
 
 ## 1.0.0

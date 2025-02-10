@@ -20,7 +20,10 @@ Matcher matchesUri({
         .having((e) => e.fragment, 'fragment', fragment)
         .having((e) => e.host, 'host', host)
         .having((e) => e.path, 'path', path)
-        .having((e) => e.port, 'port', port);
+        .having((e) => e.port, 'port', port)
+        .having((e) => e.queryParameters, 'queryParameters', queryParameters)
+        .having((e) => e.scheme, 'scheme', scheme)
+        .having((e) => e.userInfo, 'userInfo', userInfo);
 
 /*
       _feature('Uri', 'path', path, (i) => i.path),

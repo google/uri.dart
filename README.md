@@ -1,4 +1,4 @@
-[![ci](https://github.com/google/uri.dart/workflows/ci/badge.svg?branch=master)](https://github.com/google/uri.dart/actions?query=branch%3Amaster)
+[![ci](https://github.com/google/uri.dart/actions/workflows/ci.yml/badge.svg)](https://github.com/google/uri.dart/actions/workflows/ci.yml)
 
 Utilities for working with [URI][uri]s in Dart, mostly parsing and generating URIs.
 

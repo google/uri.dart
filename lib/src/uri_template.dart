@@ -4,8 +4,6 @@
 
 import 'dart:collection' show UnmodifiableListView;
 
-import 'package:quiver/pattern.dart' show escapeRegex;
-
 import 'encoding.dart';
 import 'uri_builder.dart';
 import 'uri_pattern.dart';
@@ -371,7 +369,7 @@ class _Compiler {
         for (var i = 0; i < subparts.length; i++) {
           final subpart = subparts[i];
           if (subpart is String) {
-            pathBuffer.write('(?:${escapeRegex(subpart)})');
+            pathBuffer.write('(?:${RegExp.escape(subpart)})');
           } else if ((subpart as Match).group(1) == '?') {
             _compileQuery(prevParts: subparts.sublist(i + 1));
             break;
@@ -482,7 +480,7 @@ class _Compiler {
       for (var i = 0; i < prevParts.length; i++) {
         final subpart = prevParts[i];
         if (subpart is String) {
-          fragmentBuffer.write('(?:${escapeRegex(subpart)})');
+          fragmentBuffer.write('(?:${RegExp.escape(subpart)})');
         } else if ((subpart as Match).group(1) == '?') {
           throw ParseException('?');
         } else if (subpart.group(1) == '#') {
@@ -493,7 +491,7 @@ class _Compiler {
     while (_parts.moveNext()) {
       final part = _parts.current;
       if (part is String) {
-        fragmentBuffer.write('(?:${escapeRegex(part)})');
+        fragmentBuffer.write('(?:${RegExp.escape(part)})');
       } else {
         final match = part as Match;
         final op = match.group(2);

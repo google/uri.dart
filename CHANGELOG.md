@@ -1,4 +1,4 @@
-## 2.0.0
+## 2.0.0-wip
 
 - Require Dart 3.1.0 or greater.
 - Drop support for the `matchers` library, so that we can drop the dependency

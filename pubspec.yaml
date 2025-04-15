@@ -1,13 +1,11 @@
 name: uri
-version: 2.0.0
+version: 2.0.0-wip
 description: >-
   Utilities for building and parsing URIs, including support for parsing
   URI templates as defined in RFC 6570.
 repository: https://github.com/google/uri.dart
 environment:
   sdk: ^3.1.0
-
-dependencies:
 
 dev_dependencies:
   dart_flutter_team_lints: ^3.0.0

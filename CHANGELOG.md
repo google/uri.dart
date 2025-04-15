@@ -1,7 +1,11 @@
-## 1.1.0-wip
+## 2.0.0-wip
 
 - Require Dart 3.1.0 or greater.
-- No longer explicitly name the `matchers.dart` library as `uri.matchers`.
+- Drop support for the `matchers` library, so that we can drop the dependency
+  on `matcher`.
+  - If you need this, please file a request for a new package to be published
+    with just the matcher functionality.
+- Drop the dependency on `quiver`.
 
 ## 1.0.0
 

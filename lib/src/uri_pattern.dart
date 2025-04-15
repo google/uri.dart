@@ -2,9 +2,6 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:quiver/collection.dart' show mapsEqual;
-import 'package:quiver/core.dart' show hash4;
-
 /// An interface for objects that match [Uri]s.
 abstract class UriPattern {
   /// Returns `true` if [uri] is matched by this pattern.
@@ -45,9 +42,20 @@ class UriMatch {
       other is UriMatch &&
       pattern == other.pattern &&
       input == other.input &&
-      mapsEqual(parameters, other.parameters) &&
+      parameters.equals(other.parameters) &&
       rest == other.rest;
 
   @override
-  int get hashCode => hash4(pattern, input, parameters.toString(), rest);
+  int get hashCode => Object.hash(pattern, input, parameters.toString(), rest);
+}
+
+extension on Map<String, String?> {
+  bool equals(Map<String, String?> other) {
+    if (length != other.length) return false;
+    for (var entry in entries) {
+      if (!other.containsKey(entry.key)) return false;
+      if (other[entry.key] != entry.value) return false;
+    }
+    return true;
+  }
 }

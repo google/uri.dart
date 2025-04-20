@@ -19,8 +19,8 @@ UriMatch is the result of `UriPattern.match()`. It contains the parameters parse
 UriTemplate is an implementation of [RFC 6570 URI Templates][rfc6570]. URI Templates are useful for generating URIs from data. UriTemplates are created from a template string, and then expanded with data to generate a URI:
 
 ```dart
-var template = UriTemplate("http://example.com/~{user}/");
-String fredUri = template.expand({'user': 'fred'});
+final template = UriTemplate('http://example.com/~{user}/');
+final fredUri = template.expand({'user': 'fred'});
 print(fredUri); // prints: http://example.com/~fred/
 ```
 
